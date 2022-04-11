@@ -22,4 +22,5 @@ echo 'src-git lienol https://github.com/Lienol/openwrt-package' >>feeds.conf.def
 echo 'src-git Boos https://github.com/Boos4721/OpenWrt-Packages' >>feeds.conf.default
 git config --global user.email "i@5icodes.com"
 git config --global user.name "hnyyghk"
+git revert --no-edit 98eeb48d7069b0ca3e52fdd23a03951532aa7ddc
 git revert --no-edit edbd8d2e9839357f3a4f0a06174d243f362b1544
