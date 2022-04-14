@@ -19,8 +19,8 @@ if [ -z "$COMMIT_SHA" ]; then
 fi
 
 # Modify default timezone
-echo 'Modify default timezone...'
-sed -i 's/UTC/Asia\/Shanghai/g' package/base-files/files/bin/config_generate
+#echo 'Modify default timezone...'
+#sed -i 's/UTC/Asia\/Shanghai/g' package/base-files/files/bin/config_generate
 
 # Modify default NTP server
 echo 'Modify default NTP server...'
@@ -31,7 +31,7 @@ sed -i 's/cn.pool.ntp.org/pool.ntp.org/g' package/base-files/files/bin/config_ge
 
 # Modify default LAN ip
 echo 'Modify default LAN IP...'
-sed -i 's/192.168.1.1/192.168.31.1/g' package/base-files/files/bin/config_generate
+sed -i 's/10.10.10.1/192.168.31.1/g' package/base-files/files/bin/config_generate
 
 # 修正连接数（by ベ七秒鱼ベ）
 sed -i '/customized in this file/a net.netfilter.nf_conntrack_max=165535' package/base-files/files/etc/sysctl.conf
@@ -40,8 +40,8 @@ sed -i '/customized in this file/a net.netfilter.nf_conntrack_max=165535' packag
 sed -i 's/$1$WplwC1t5$HBAtVXABp7XbvVjG4193B.:18753:0:99999:7/:0:0:99999:7/g' package/base-files/files/etc/shadow
 
 # Ax6修改无线命名
-#sed -i 's/OpenWrt_2.4G/OpenWrt_5G/g'  package/kernel/mac80211/files/lib/wifi/mac80211.sh
-#sed -i '185s/OpenWrt_5G/OpenWrt_2.4G/' package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i 's/OpenWrt_2.4G/OpenWrt_5G/g'  package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i '185s/OpenWrt_5G/OpenWrt_2.4G/' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
 # Modify default banner
 build_date=$(date +"%Y-%m-%d %H:%M:%S")
