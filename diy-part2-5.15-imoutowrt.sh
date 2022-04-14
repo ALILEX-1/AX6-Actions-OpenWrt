@@ -6,7 +6,7 @@
 # See /LICENSE for more information.
 #
 # https://github.com/P3TERX/Actions-OpenWrt
-# File name: diy-part2-5.15-robimarko.sh
+# File name: diy-part2-5.15-imoutowrt.sh
 # Description: OpenWrt DIY script part 2 (After Update feeds)
 #
 
@@ -18,16 +18,12 @@ if [ -z "$COMMIT_SHA" ]; then
     COMMIT_SHA='Unknown'
 fi
 
-# Modify default timezone
-echo 'Modify default timezone...'
-sed -i "s/'UTC'/'CST-8'\n\t\tset system.@system[-1].zonename='Asia\/Shanghai'/g" package/base-files/files/bin/config_generate
-
 # Modify default NTP server
 echo 'Modify default NTP server...'
-sed -i 's/0.openwrt.pool.ntp.org/ntp.ntsc.ac.cn/g' package/base-files/files/bin/config_generate
-sed -i 's/1.openwrt.pool.ntp.org/ntp.aliyun.com/g' package/base-files/files/bin/config_generate
-sed -i 's/2.openwrt.pool.ntp.org/cn.ntp.org.cn/g' package/base-files/files/bin/config_generate
-sed -i 's/3.openwrt.pool.ntp.org/pool.ntp.org/g' package/base-files/files/bin/config_generate
+sed -i 's/cn.ntp.org.cn/pool.ntp.org/g' package/emortal/default-settings/files/99-default-settings-chinese
+sed -i 's/ntp.ntsc.ac.cn/cn.ntp.org.cn/g' package/emortal/default-settings/files/99-default-settings-chinese
+sed -i 's/time1.cloud.tencent.com/ntp.ntsc.ac.cn/g' package/emortal/default-settings/files/99-default-settings-chinese
+sed -i 's/ntp1.aliyun.com/ntp.aliyun.com/g' package/emortal/default-settings/files/99-default-settings-chinese
 
 # Modify default LAN ip
 echo 'Modify default LAN IP...'
@@ -36,11 +32,7 @@ sed -i 's/192.168.1.1/192.168.31.1/g' package/base-files/files/bin/config_genera
 # 修正连接数（by ベ七秒鱼ベ）
 sed -i '/customized in this file/a net.netfilter.nf_conntrack_max=165535' package/base-files/files/etc/sysctl.conf
 
-# 设置密码为password
-sed -i 's/root:::0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.::0:99999:7:::/g' package/base-files/files/etc/shadow
-
-# Ax6修改无线开关、命名及密码
-sed -i 's/radio${devidx}.disabled=1/radio${devidx}.disabled=0/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
+# Ax6修改无线命名及密码
 sed -i 's/radio${devidx}.ssid=OpenWrt/radio0.ssid=MERCURY_8888_5G\n\t\t\tset wireless.default_radio1.ssid=MERCURY_8888/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 sed -i 's/radio${devidx}.encryption=none/radio${devidx}.encryption=sae-mixed\n\t\t\tset wireless.default_radio${devidx}.key=824080252/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
