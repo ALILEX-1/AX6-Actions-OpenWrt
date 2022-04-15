@@ -61,7 +61,7 @@ jobs:
         df -hT $PWD
         git clone $REPO_URL -b $REPO_BRANCH openwrt
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
-        [ -e $CONFIG_FILE ] && echo "TARGET_DEVICE=$(grep '^CONFIG_TARGET.*DEVICE.*=y' $CONFIG_FILE | sed -r 's/.*DEVICE_(.*)=y/\1/')" >> $GITHUB_ENV
+        [ -e $CONFIG_FILE ] && echo "TARGET_DEVICE=$(grep '^CONFIG_TARGET.*DEVICE.*=y' $GITHUB_WORKSPACE/$CONFIG_FILE | sed -r 's/.*DEVICE_(.*)=y/\1/')" >> $GITHUB_ENV
 
     - name: Cache
       uses: klever1988/cachewrtbuild@main
