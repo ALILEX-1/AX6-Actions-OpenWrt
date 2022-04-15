@@ -13,9 +13,9 @@
 # https://github.com/deplives/OpenWrt-CI-RC/blob/main/second.sh
 # https://github.com/jarod360/Redmi_AX6/blob/main/diy-part2.sh
 
-COMMIT_SHA=$1
-if [ -z "$COMMIT_SHA" ]; then
-    COMMIT_SHA='Unknown'
+COMMIT_COMMENT=$1
+if [ -z "$COMMIT_COMMENT" ]; then
+    COMMIT_COMMENT='Unknown'
 fi
 
 # Modify default timezone
@@ -47,7 +47,7 @@ sed -i 's/radio${devidx}.encryption=none/radio${devidx}.encryption=sae-mixed\n\t
 # Modify default banner
 echo 'Modify default banner...'
 build_date=$(date +"%Y-%m-%d %H:%M:%S")
-echo "                                                               " >package/base-files/files/etc/banner
+echo "                                                               " > package/base-files/files/etc/banner
 echo " ██████╗ ██████╗ ███████╗███╗   ██╗██╗    ██╗██████╗ ████████╗ " >>package/base-files/files/etc/banner
 echo "██╔═══██╗██╔══██╗██╔════╝████╗  ██║██║    ██║██╔══██╗╚══██╔══╝ " >>package/base-files/files/etc/banner
 echo "██║   ██║██████╔╝█████╗  ██╔██╗ ██║██║ █╗ ██║██████╔╝   ██║    " >>package/base-files/files/etc/banner
@@ -56,6 +56,6 @@ echo "╚██████╔╝██║     ███████╗██║
 echo " ╚═════╝ ╚═╝     ╚══════╝╚═╝  ╚═══╝ ╚══╝╚══╝ ╚═╝  ╚═╝   ╚═╝    " >>package/base-files/files/etc/banner
 echo " ------------------------------------------------------------- " >>package/base-files/files/etc/banner
 echo " %D %C ${build_date} by hnyyghk                                " >>package/base-files/files/etc/banner
-echo " $COMMIT_SHA                                                   " >>package/base-files/files/etc/banner
+echo " $COMMIT_COMMENT                                               " >>package/base-files/files/etc/banner
 echo " ------------------------------------------------------------- " >>package/base-files/files/etc/banner
 echo "                                                               " >>package/base-files/files/etc/banner
