@@ -41,8 +41,8 @@ sed -i 's/radio1.ssid=OpenWrt_5G/radio1.ssid=MERCURY_8888/g' package/kernel/mac8
 sed -i 's/radio${devidx}.key=1234567890/radio${devidx}.key=824080252/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
 # Modify default banner
-build_date=$(date +"%Y-%m-%d %H:%M:%S")
 echo 'Modify default banner...'
+build_date=$(date +"%Y-%m-%d %H:%M:%S")
 echo "                                                               " >package/base-files/files/etc/banner
 echo " ██████╗ ██████╗ ███████╗███╗   ██╗██╗    ██╗██████╗ ████████╗ " >>package/base-files/files/etc/banner
 echo "██╔═══██╗██╔══██╗██╔════╝████╗  ██║██║    ██║██╔══██╗╚══██╔══╝ " >>package/base-files/files/etc/banner

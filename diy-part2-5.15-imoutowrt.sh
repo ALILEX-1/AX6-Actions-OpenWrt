@@ -37,8 +37,9 @@ sed -i 's/radio${devidx}.ssid=OpenWrt/radio0.ssid=MERCURY_8888_5G\n\t\t\tset wir
 sed -i 's/radio${devidx}.encryption=none/radio${devidx}.encryption=sae-mixed\n\t\t\tset wireless.default_radio${devidx}.key=824080252/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
 # Modify default banner
-build_date=$(date +"%Y-%m-%d %H:%M:%S")
 echo 'Modify default banner...'
+build_date=$(date +"%Y-%m-%d %H:%M:%S")
+sed -i 's|mv /etc/openwrt_banner /etc/banner||g' package/emortal/default-settings/files/99-default-settings
 echo "                                                               " >package/base-files/files/etc/banner
 echo " ██████╗ ██████╗ ███████╗███╗   ██╗██╗    ██╗██████╗ ████████╗ " >>package/base-files/files/etc/banner
 echo "██╔═══██╗██╔══██╗██╔════╝████╗  ██║██║    ██║██╔══██╗╚══██╔══╝ " >>package/base-files/files/etc/banner
