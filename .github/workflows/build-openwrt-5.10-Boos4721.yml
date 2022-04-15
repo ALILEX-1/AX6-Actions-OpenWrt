@@ -59,8 +59,14 @@ jobs:
     - name: Clone source code
       working-directory: /workdir
       run: |
+        echo $CONFIG_FILE
+        grep '^CONFIG_TARGET.*DEVICE.*=y' $CONFIG_FILE
         df -hT $PWD
+        echo $CONFIG_FILE
+        grep '^CONFIG_TARGET.*DEVICE.*=y' $CONFIG_FILE
         git clone $REPO_URL -b $REPO_BRANCH openwrt
+        echo $CONFIG_FILE
+        grep '^CONFIG_TARGET.*DEVICE.*=y' $CONFIG_FILE
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
         echo $CONFIG_FILE
         grep '^CONFIG_TARGET.*DEVICE.*=y' $CONFIG_FILE
