@@ -71,6 +71,8 @@ jobs:
         echo ${{ env.REPO_URL }}/tree/${{ env.REPO_BRANCH }}?device=${{ env.TARGET_DEVICE }}
         echo 4
         echo ${{ env.REPO_URL }}/commit/${{ env.COMMITHASH }}?branch=${{ env.REPO_BRANCH }}&device=${{ env.TARGET_DEVICE }}
+        [ -e $GITHUB_WORKSPACE/$CONFIG_FILE ] && echo 5
+        [ -e $CONFIG_FILE ] && echo 6
 
     - name: Cache
       uses: klever1988/cachewrtbuild@test
