@@ -60,6 +60,8 @@ jobs:
       working-directory: /workdir
       run: |
         echo $CONFIG_FILE
+        pwd
+        ls
         grep '^CONFIG_TARGET.*DEVICE.*=y' "$CONFIG_FILE"
         df -hT $PWD
         echo $CONFIG_FILE
