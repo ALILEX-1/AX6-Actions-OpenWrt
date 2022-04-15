@@ -62,16 +62,7 @@ jobs:
         df -hT $PWD
         git clone $REPO_URL -b $REPO_BRANCH openwrt
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
-        echo "1"
-        echo "${{ env.REPO_URL }}/tree/${{ env.REPO_BRANCH }}?device=${{ env.TARGET_DEVICE }}"
-        echo "2"
-        echo "${{ env.REPO_URL }}/commit/${{ env.COMMITHASH }}?branch=${{ env.REPO_BRANCH }}&device=${{ env.TARGET_DEVICE }}"
-        [ -e $GITHUB_WORKSPACE/$CONFIG_FILE ] && echo "TARGET_DEVICE=$(grep '^CONFIG_TARGET.*DEVICE.*=y' $GITHUB_WORKSPACE/$CONFIG_FILE | sed -r 's/.*DEVICE_(.*)=y/\1/')"
         [ -e $GITHUB_WORKSPACE/$CONFIG_FILE ] && echo "TARGET_DEVICE=$(grep '^CONFIG_TARGET.*DEVICE.*=y' $GITHUB_WORKSPACE/$CONFIG_FILE | sed -r 's/.*DEVICE_(.*)=y/\1/')" >> $GITHUB_ENV
-        echo "3"
-        echo "${{ env.REPO_URL }}/tree/${{ env.REPO_BRANCH }}?device=${{ env.TARGET_DEVICE }}"
-        echo "4"
-        echo "${{ env.REPO_URL }}/commit/${{ env.COMMITHASH }}?branch=${{ env.REPO_BRANCH }}&device=${{ env.TARGET_DEVICE }}"
 
     - name: Cache
       uses: klever1988/cachewrtbuild@test
@@ -86,6 +77,8 @@ jobs:
         chmod +x $DIY_P1_SH
         cd openwrt
         echo "COMMITHASH=$(git rev-parse HEAD)" >> $GITHUB_ENV
+        echo "${{ env.REPO_URL }}/tree/${{ env.REPO_BRANCH }}?device=${{ env.TARGET_DEVICE }}"
+        echo "${{ env.REPO_URL }}/commit/${{ env.COMMITHASH }}?branch=${{ env.REPO_BRANCH }}&device=${{ env.TARGET_DEVICE }}"
         $GITHUB_WORKSPACE/$DIY_P1_SH
 
     - name: Update feeds
