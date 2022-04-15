@@ -77,10 +77,6 @@ jobs:
         chmod +x $DIY_P1_SH
         cd openwrt
         echo "COMMITHASH=$(git rev-parse HEAD)" >> $GITHUB_ENV
-        echo ${{ env.REPO_URL }}/tree/${{ env.REPO_BRANCH }}?device=${{ env.TARGET_DEVICE }}
-        echo ${{ env.REPO_URL }}/commit/${{ env.COMMITHASH }}?branch=${{ env.REPO_BRANCH }}&device=${{ env.TARGET_DEVICE }}
-        echo "${{ env.REPO_URL }}/tree/${{ env.REPO_BRANCH }}?device=${{ env.TARGET_DEVICE }}"
-        echo "${{ env.REPO_URL }}/commit/${{ env.COMMITHASH }}?branch=${{ env.REPO_BRANCH }}&device=${{ env.TARGET_DEVICE }}"
         $GITHUB_WORKSPACE/$DIY_P1_SH
 
     - name: Update feeds
