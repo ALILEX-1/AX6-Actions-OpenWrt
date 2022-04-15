@@ -32,7 +32,8 @@ sed -i 's/192.168.1.1/192.168.31.1/g' package/base-files/files/bin/config_genera
 # 修正连接数（by ベ七秒鱼ベ）
 sed -i '/customized in this file/a net.netfilter.nf_conntrack_max=165535' package/base-files/files/etc/sysctl.conf
 
-# Ax6修改无线命名及密码
+# Ax6修改无线国家代码、命名、加密方式及密码
+sed -i 's/radio${devidx}.country=US/radio${devidx}.country=CN/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 sed -i 's/radio${devidx}.ssid=OpenWrt/radio0.ssid=MERCURY_8888_5G\n\t\t\tset wireless.default_radio1.ssid=MERCURY_8888/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 sed -i 's/radio${devidx}.encryption=none/radio${devidx}.encryption=sae-mixed\n\t\t\tset wireless.default_radio${devidx}.key=824080252/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 

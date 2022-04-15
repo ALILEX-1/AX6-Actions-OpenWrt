@@ -35,7 +35,8 @@ sed -i '/customized in this file/a net.netfilter.nf_conntrack_max=165535' packag
 # 设置密码为password
 sed -i 's/root:$1$WplwC1t5$HBAtVXABp7XbvVjG4193B.:18753:0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.::0:99999:7:::/g' package/base-files/files/etc/shadow
 
-# Ax6修改无线命名及密码
+# Ax6修改无线国家代码、命名及密码
+sed -i 's/radio${devidx}.country=US/radio${devidx}.country=CN/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 sed -i 's/radio0.ssid=OpenWrt_2.4G/radio0.ssid=MERCURY_8888_5G/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 sed -i 's/radio1.ssid=OpenWrt_5G/radio1.ssid=MERCURY_8888/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 sed -i 's/radio${devidx}.key=1234567890/radio${devidx}.key=824080252/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
