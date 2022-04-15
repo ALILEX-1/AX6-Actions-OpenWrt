@@ -59,22 +59,30 @@ jobs:
     - name: Clone source code
       working-directory: /workdir
       run: |
+        echo 'echo...'
         echo $CONFIG_FILE
+        echo 'echo1...'
+        echo $GITHUB_WORKSPACE
+        echo 'pwd...'
         pwd
-        ls
-        grep '^CONFIG_TARGET.*DEVICE.*=y' "$CONFIG_FILE"
+        echo 'ls1...'
+        ls -l
+        echo 'ls...'
+        ls -l $GITHUB_WORKSPACE
+        echo 'grep1...'
+        grep '^CONFIG_TARGET.*DEVICE.*=y' $GITHUB_WORKSPACE/$CONFIG_FILE
+        echo 'grep...'
+        grep '^CONFIG_TARGET.*DEVICE.*=y' $CONFIG_FILE
         df -hT $PWD
-        echo $CONFIG_FILE
-        grep '^CONFIG_TARGET.*DEVICE.*=y' "$CONFIG_FILE"
         git clone $REPO_URL -b $REPO_BRANCH openwrt
         echo $CONFIG_FILE
-        grep '^CONFIG_TARGET.*DEVICE.*=y' "$CONFIG_FILE"
+        grep '^CONFIG_TARGET.*DEVICE.*=y' $CONFIG_FILE
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
         echo $CONFIG_FILE
-        grep '^CONFIG_TARGET.*DEVICE.*=y' "$CONFIG_FILE"
-        grep '^CONFIG_TARGET.*DEVICE.*=y' "$CONFIG_FILE" | sed -r 's/.*DEVICE_(.*)=y/\1/'
-        echo "TARGET_DEVICE=$(grep '^CONFIG_TARGET.*DEVICE.*=y' "$CONFIG_FILE" | sed -r 's/.*DEVICE_(.*)=y/\1/')"
-        echo "TARGET_DEVICE=$(grep '^CONFIG_TARGET.*DEVICE.*=y' "$CONFIG_FILE" | sed -r 's/.*DEVICE_(.*)=y/\1/')" >> $GITHUB_ENV
+        grep '^CONFIG_TARGET.*DEVICE.*=y' $CONFIG_FILE
+        grep '^CONFIG_TARGET.*DEVICE.*=y' $CONFIG_FILE | sed -r 's/.*DEVICE_(.*)=y/\1/'
+        echo "TARGET_DEVICE=$(grep '^CONFIG_TARGET.*DEVICE.*=y' $CONFIG_FILE | sed -r 's/.*DEVICE_(.*)=y/\1/')"
+        echo "TARGET_DEVICE=$(grep '^CONFIG_TARGET.*DEVICE.*=y' $CONFIG_FILE | sed -r 's/.*DEVICE_(.*)=y/\1/')" >> $GITHUB_ENV
 
     - name: Cache
       uses: klever1988/cachewrtbuild@main
