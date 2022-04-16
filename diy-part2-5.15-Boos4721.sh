@@ -6,7 +6,7 @@
 # See /LICENSE for more information.
 #
 # https://github.com/P3TERX/Actions-OpenWrt
-# File name: diy-part2-5.10-Boos4721.sh
+# File name: diy-part2-5.15-Boos4721.sh
 # Description: OpenWrt DIY script part 2 (After Update feeds)
 #
 
@@ -30,7 +30,7 @@ echo 'Modify default LAN IP...'
 sed -i 's/10.10.10.1/192.168.31.1/g' package/base-files/files/bin/config_generate
 
 # 修正连接数（by ベ七秒鱼ベ）
-sed -i '/customized in this file/a net.netfilter.nf_conntrack_max=165535' package/base-files/files/etc/sysctl.conf
+sed -i 's/net.netfilter.nf_conntrack_max=/net.netfilter.nf_conntrack_max=165535/g' package/base-files/files/etc/sysctl.conf
 
 # 设置密码为password
 sed -i 's/root:$1$WplwC1t5$HBAtVXABp7XbvVjG4193B.:18753:0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.::0:99999:7:::/g' package/base-files/files/etc/shadow
