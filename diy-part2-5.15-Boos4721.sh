@@ -37,8 +37,7 @@ sed -i 's/root:$1$WplwC1t5$HBAtVXABp7XbvVjG4193B.:18753:0:99999:7:::/root:$1$V4U
 
 # Ax6修改无线国家代码、命名及密码
 sed -i 's/radio${devidx}.country=US/radio${devidx}.country=CN/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
-sed -i 's/radio0.ssid=OpenWrt_2.4G/radio0.ssid=MERCURY_8888/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
-sed -i 's/radio1.ssid=OpenWrt_5G/radio1.ssid=MERCURY_8888_2.4G\n\t\t\tset wireless.default_radio1.hidden=1/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i 's/radio${devidx}.ssid=OpenWrt/radio0.ssid=MERCURY_8888\n\t\t\tset wireless.default_radio1.ssid=MERCURY_8888_2.4G\n\t\t\tset wireless.default_radio1.hidden=1/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 sed -i 's/radio${devidx}.key=1234567890/radio${devidx}.key=824080252/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
 # Modify default banner
