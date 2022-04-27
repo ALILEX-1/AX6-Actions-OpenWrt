@@ -59,8 +59,3 @@ echo " %D %C ${build_date} by hnyyghk                                " >>package
 echo " $COMMIT_COMMENT                                               " >>package/base-files/files/etc/banner
 echo " ------------------------------------------------------------- " >>package/base-files/files/etc/banner
 echo "                                                               " >>package/base-files/files/etc/banner
-
-# 添加smartdns
-#echo 'Modify smartdns...'
-#git clone https://github.com/pymumu/openwrt-smartdns package/smartdns
-#git clone -b lede https://github.com/pymumu/luci-app-smartdns.git package/luci-app-smartdns
