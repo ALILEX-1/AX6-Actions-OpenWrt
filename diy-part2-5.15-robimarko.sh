@@ -61,6 +61,6 @@ echo " ------------------------------------------------------------- " >>package
 echo "                                                               " >>package/base-files/files/etc/banner
 
 # 添加smartdns
-echo 'Modify smartdns...'
-git clone https://github.com/pymumu/openwrt-smartdns package/smartdns
-git clone -b lede https://github.com/pymumu/luci-app-smartdns.git package/luci-app-smartdns
+#echo 'Modify smartdns...'
+#git clone https://github.com/pymumu/openwrt-smartdns package/smartdns
+#git clone -b lede https://github.com/pymumu/luci-app-smartdns.git package/luci-app-smartdns
