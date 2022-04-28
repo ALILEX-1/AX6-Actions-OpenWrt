@@ -21,5 +21,10 @@ echo 'src-git small https://github.com/kenzok8/small' >>feeds.conf.default
 #echo 'src-git lienol https://github.com/Lienol/openwrt-package' >>feeds.conf.default
 echo 'src-git Boos https://github.com/Boos4721/OpenWrt-Packages' >>feeds.conf.default
 
-git clone https://github.com/mchome/openwrt-vlmcsd.git package/vlmcsd
-git clone https://github.com/mchome/luci-app-vlmcsd.git package/luci-app-vlmcsd
+for i in "luci-app-vlmcsd" "luci-app-nlbwmon"; do \
+  svn checkout "https://github.com/coolsnowwolf/luci/trunk/applications/$i" "package/$i"; \
+done
+
+for i in "vlmcsd" "nlbwmon"; do \
+  svn checkout "https://github.com/coolsnowwolf/packages/trunk/net/$i" "package/$i"; \
+done
