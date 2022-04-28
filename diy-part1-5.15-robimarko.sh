@@ -19,4 +19,7 @@
 echo 'src-git kenzo https://github.com/kenzok8/openwrt-packages' >>feeds.conf.default
 echo 'src-git small https://github.com/kenzok8/small' >>feeds.conf.default
 #echo 'src-git lienol https://github.com/Lienol/openwrt-package' >>feeds.conf.default
-#echo 'src-git Boos https://github.com/Boos4721/OpenWrt-Packages' >>feeds.conf.default
+echo 'src-git Boos https://github.com/Boos4721/OpenWrt-Packages' >>feeds.conf.default
+
+git clone https://github.com/mchome/openwrt-vlmcsd.git package/vlmcsd
+git clone https://github.com/mchome/luci-app-vlmcsd.git package/luci-app-vlmcsd
