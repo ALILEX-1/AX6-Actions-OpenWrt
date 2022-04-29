@@ -29,7 +29,7 @@ echo "src-link custom /workdir/openwrt/custom-feed" >>feeds.conf.default
 mkdir custom-feed
 
 for i in "luci.mk"; do \
-  svn checkout "https://github.com/coolsnowwolf/luci/trunk/$i" "custom-feed/$i"; \
+  svn export "https://github.com/coolsnowwolf/luci/trunk/$i" "custom-feed/$i"; \
 done
 
 mkdir custom-feed/applications
