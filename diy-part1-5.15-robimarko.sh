@@ -20,17 +20,27 @@ echo 'src-git kenzo https://github.com/kenzok8/small-package' >>feeds.conf.defau
 #echo 'src-git lienol https://github.com/Lienol/openwrt-package' >>feeds.conf.default
 #echo 'src-git Boos https://github.com/Boos4721/OpenWrt-Packages' >>feeds.conf.default
 
-pwd
-ls
+echo "src-link custom $GITHUB_WORKSPACE/custom-feed" >>feeds.conf.default
+#echo "src-link custom $GITHUB_WORKSPACE/custom-feed" >feeds.conf.default.tmp
+#copy /b feeds.conf.default.tmp+feeds.conf.default feeds.conf.default.new
+#del feeds.conf.default
+#ren feeds.conf.default.new feeds.conf.default
+
+mkdir ../custom-feed
 
 for i in "luci-app-vlmcsd" "luci-app-ddns"; do \
-  svn checkout "https://github.com/coolsnowwolf/luci/trunk/applications/$i" "package/$i"; \
+  svn checkout "https://github.com/coolsnowwolf/luci/trunk/applications/$i" "../custom-feed/$i"; \
 done
 
 for i in "ddns-scripts_aliyun"; do \
-  svn checkout "https://github.com/coolsnowwolf/lede/trunk/package/lean/$i" "package/$i"; \
+  svn checkout "https://github.com/coolsnowwolf/lede/trunk/package/lean/$i" "../custom-feed/$i"; \
 done
 
 for i in "vlmcsd" "ddns-scripts"; do \
-  svn checkout "https://github.com/coolsnowwolf/packages/trunk/net/$i" "package/$i"; \
+  svn checkout "https://github.com/coolsnowwolf/packages/trunk/net/$i" "../custom-feed/$i"; \
 done
+
+pwd
+ls
+ls ../
+ls ../custom-feed/
