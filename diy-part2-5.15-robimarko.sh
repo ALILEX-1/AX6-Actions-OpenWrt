@@ -60,17 +60,5 @@ echo " $COMMIT_COMMENT                                               " >>package
 echo " ------------------------------------------------------------- " >>package/base-files/files/etc/banner
 echo "                                                               " >>package/base-files/files/etc/banner
 
-rm -rf feeds/luci/applications/luci-app-ddns
-rm -rf feeds/packages/net/ddns-scripts
-
-for i in "luci-app-vlmcsd" "luci-app-ddns"; do \
-  svn checkout "https://github.com/coolsnowwolf/luci/trunk/applications/$i" "package/$i"; \
-done
-
-for i in "ddns-scripts_aliyun"; do \
-  svn checkout "https://github.com/coolsnowwolf/lede/trunk/package/lean/$i" "package/$i"; \
-done
-
-for i in "vlmcsd" "ddns-scripts"; do \
-  svn checkout "https://github.com/coolsnowwolf/packages/trunk/net/$i" "package/$i"; \
-done
+#rm -rf feeds/luci/applications/luci-app-ddns
+#rm -rf feeds/packages/net/ddns-scripts

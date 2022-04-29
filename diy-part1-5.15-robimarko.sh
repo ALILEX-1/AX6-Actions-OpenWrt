@@ -19,3 +19,15 @@
 echo 'src-git kenzo https://github.com/kenzok8/small-package' >>feeds.conf.default
 #echo 'src-git lienol https://github.com/Lienol/openwrt-package' >>feeds.conf.default
 #echo 'src-git Boos https://github.com/Boos4721/OpenWrt-Packages' >>feeds.conf.default
+
+for i in "luci-app-vlmcsd" "luci-app-ddns"; do \
+  svn checkout "https://github.com/coolsnowwolf/luci/trunk/applications/$i" "package/$i"; \
+done
+
+for i in "ddns-scripts_aliyun"; do \
+  svn checkout "https://github.com/coolsnowwolf/lede/trunk/package/lean/$i" "package/$i"; \
+done
+
+for i in "vlmcsd" "ddns-scripts"; do \
+  svn checkout "https://github.com/coolsnowwolf/packages/trunk/net/$i" "package/$i"; \
+done
