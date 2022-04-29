@@ -16,15 +16,6 @@
 # Add a feed source
 #echo 'src-git helloworld https://github.com/fw876/helloworld' >>feeds.conf.default
 #echo 'src-git passwall https://github.com/xiaorouji/openwrt-passwall' >>feeds.conf.default
-echo 'src-git kenzo https://github.com/kenzok8/openwrt-packages' >>feeds.conf.default
-echo 'src-git small https://github.com/kenzok8/small' >>feeds.conf.default
+echo 'src-git kenzo https://github.com/kenzok8/small-package' >>feeds.conf.default
 #echo 'src-git lienol https://github.com/Lienol/openwrt-package' >>feeds.conf.default
-echo 'src-git Boos https://github.com/Boos4721/OpenWrt-Packages' >>feeds.conf.default
-
-for i in "luci-app-vlmcsd" "luci-app-nlbwmon"; do \
-  svn checkout "https://github.com/coolsnowwolf/luci/trunk/applications/$i" "package/$i"; \
-done
-
-for i in "vlmcsd" "nlbwmon"; do \
-  svn checkout "https://github.com/coolsnowwolf/packages/trunk/net/$i" "package/$i"; \
-done
+#echo 'src-git Boos https://github.com/Boos4721/OpenWrt-Packages' >>feeds.conf.default
