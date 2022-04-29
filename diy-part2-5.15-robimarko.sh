@@ -59,6 +59,3 @@ echo " %D %C ${build_date} by hnyyghk                                " >>package
 echo " $COMMIT_COMMENT                                               " >>package/base-files/files/etc/banner
 echo " ------------------------------------------------------------- " >>package/base-files/files/etc/banner
 echo "                                                               " >>package/base-files/files/etc/banner
-
-#rm -rf feeds/luci/applications/luci-app-ddns
-#rm -rf feeds/packages/net/ddns-scripts
