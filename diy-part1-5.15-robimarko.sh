@@ -28,19 +28,20 @@ echo "src-link custom /workdir/openwrt/custom-feed" >>feeds.conf.default
 
 mkdir custom-feed
 
+for i in "luci.mk"; do \
+  svn checkout "https://github.com/coolsnowwolf/luci/trunk/$i" "custom-feed/$i"; \
+done
+
+mkdir custom-feed/applications
+
 for i in "luci-app-vlmcsd" "luci-app-ddns"; do \
-  svn checkout "https://github.com/coolsnowwolf/luci/trunk/applications/$i" "custom-feed/$i"; \
+  svn checkout "https://github.com/coolsnowwolf/luci/trunk/applications/$i" "custom-feed/applications/$i"; \
 done
 
 for i in "ddns-scripts_aliyun"; do \
-  svn checkout "https://github.com/coolsnowwolf/lede/trunk/package/lean/$i" "custom-feed/$i"; \
+  svn checkout "https://github.com/coolsnowwolf/lede/trunk/package/lean/$i" "custom-feed/applications/$i"; \
 done
 
 for i in "vlmcsd" "ddns-scripts"; do \
-  svn checkout "https://github.com/coolsnowwolf/packages/trunk/net/$i" "custom-feed/$i"; \
+  svn checkout "https://github.com/coolsnowwolf/packages/trunk/net/$i" "custom-feed/applications/$i"; \
 done
-
-echo "1"
-cat feeds.conf.default
-echo "2"
-ls /workdir/openwrt/custom-feed
