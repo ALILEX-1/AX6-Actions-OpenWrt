@@ -40,6 +40,6 @@ for i in "vlmcsd" "ddns-scripts"; do \
   svn checkout "https://github.com/coolsnowwolf/packages/trunk/net/$i" "../custom-feed/$i"; \
 done
 
-echo feeds.conf.default
+cat feeds.conf.default
 echo "src-link custom $GITHUB_WORKSPACE/custom-feed"
-ls "$GITHUB_WORKSPACE/custom-feed"
+ls "$GITHUB_WORKSPACE/custom-feed/"
