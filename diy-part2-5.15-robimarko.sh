@@ -59,8 +59,3 @@ echo " %D %C ${build_date} by hnyyghk                                " >>package
 echo " $COMMIT_COMMENT                                               " >>package/base-files/files/etc/banner
 echo " ------------------------------------------------------------- " >>package/base-files/files/etc/banner
 echo "                                                               " >>package/base-files/files/etc/banner
-
-echo "1"
-cat logs/feeds/custom/applications/luci-app-ddns/dump.txt
-echo "2"
-cat logs/feeds/custom/applications/luci-app-vlmcsd/dump.txt
