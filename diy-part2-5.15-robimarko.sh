@@ -60,8 +60,29 @@ echo " $COMMIT_COMMENT                                               " >>package
 echo " ------------------------------------------------------------- " >>package/base-files/files/etc/banner
 echo "                                                               " >>package/base-files/files/etc/banner
 
+#netdata不支持ssl访问，有两种解决方式
+#1、修改编译配置使netdata原生支持ssl访问
+#https://www.right.com.cn/forum/thread-4045278-1-1.html
 sed -i 's/disable-https/enable-https/g' feeds/packages/admin/netdata/Makefile
+sed -i 's/DEPENDS:=/DEPENDS:=+libopenssl /g' feeds/packages/admin/netdata/Makefile
 sed -i 's/\[web\]/[web]\n\tSSL certificate = \/etc\/nginx\/conf.d\/_lan.crt\n\tSSL key = \/etc\/nginx\/conf.d\/_lan.key/g' feeds/packages/admin/netdata/files/netdata.conf
-ls
-cat feeds/packages/admin/netdata/Makefile
-cat feeds/packages/admin/netdata/files/netdata.conf
+#2、修改netdata页面端口，配置反向代理http协议19999端口至https协议19998端口
+#https://blog.csdn.net/lawsssscat/article/details/107298336
+#/etc/nginx/conf.d/ssl2netdata.conf
+#server {
+#	listen 19998 ssl;
+#	listen [::]:19998 ssl;
+#	server_name _ssl2netdata;
+#	include restrict_locally;
+#	ssl_certificate /etc/nginx/conf.d/_lan.crt;
+#	ssl_certificate_key /etc/nginx/conf.d/_lan.key;
+#	ssl_session_cache shared:SSL:32k;
+#	ssl_session_timeout 64m;
+#	location / {
+#		proxy_set_header Host $host;
+#		proxy_set_header X-Real-IP $remote_addr;
+#		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#		proxy_set_header X-Forwarded-Proto $scheme;
+#		proxy_pass http://localhost:19999;
+#	}
+#}
