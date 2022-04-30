@@ -67,6 +67,7 @@ sed -i 's/disable-https/enable-https/g' feeds/packages/admin/netdata/Makefile
 sed -i 's/DEPENDS:=/DEPENDS:=+libopenssl /g' feeds/packages/admin/netdata/Makefile
 sed -i 's/1.33.1/1.34.1/g' feeds/packages/admin/netdata/Makefile
 sed -i 's/20ba8695d87187787b27128ac3aab9b09aa29ca6b508c48542e0f7d50ec9322b/8ea0786df0e952209c14efeb02e25339a0769aa3edc029e12816b8ead24a82d7/g' feeds/packages/admin/netdata/Makefile
+rm -rf feeds/packages/admin/netdata/patches/005-freebsd.patch
 sed -i 's/\[web\]/[web]\n\tssl certificate = \/etc\/nginx\/conf.d\/_lan.crt\n\tssl key = \/etc\/nginx\/conf.d\/_lan.key/g' feeds/kenzo/luci-app-netdata/root/etc/netdata/netdata.conf
 #2、修改netdata页面端口，配置反向代理http协议19999端口至https协议19998端口
 #https://blog.csdn.net/lawsssscat/article/details/107298336
