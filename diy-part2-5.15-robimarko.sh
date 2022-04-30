@@ -59,3 +59,9 @@ echo " %D %C ${build_date} by hnyyghk                                " >>package
 echo " $COMMIT_COMMENT                                               " >>package/base-files/files/etc/banner
 echo " ------------------------------------------------------------- " >>package/base-files/files/etc/banner
 echo "                                                               " >>package/base-files/files/etc/banner
+
+sed -i 's/disable-https/enable-https/g' feeds/packages/admin/netdata/Makefile
+sed -i 's/\[web\]/[web]\n\tSSL certificate = \/etc\/nginx\/conf.d\/_lan.crt\n\tSSL key = \/etc\/nginx\/conf.d\/_lan.key/g' feeds/packages/admin/netdata/files/netdata.conf
+ls
+cat feeds/packages/admin/netdata/Makefile
+cat feeds/packages/admin/netdata/files/netdata.conf
