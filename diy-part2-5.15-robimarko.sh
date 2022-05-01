@@ -16,6 +16,8 @@
 COMMIT_COMMENT=$1
 WIFI_SSID=$2
 WIFI_KEY=$3
+PPPOE_USERNAME=$4
+PPPOE_PASSWORD=$5
 
 # Modify default timezone
 echo 'Modify default timezone...'
@@ -42,6 +44,9 @@ sed -i 's/root:::0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.::0:99999:7
 sed -i 's/radio${devidx}.disabled=1/radio${devidx}.country=CN\n\t\t\tset wireless.radio${devidx}.disabled=0/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 sed -i "s/radio\${devidx}.ssid=OpenWrt/radio0.ssid=${WIFI_SSID}\n\t\t\tset wireless.default_radio1.ssid=${WIFI_SSID}_2.4G\n\t\t\tset wireless.default_radio1.hidden=1/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 sed -i "s/radio\${devidx}.encryption=none/radio\${devidx}.encryption=sae-mixed\n\t\t\tset wireless.default_radio\${devidx}.key=${WIFI_KEY}/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
+
+# 修改wan网络配置
+sed -i "s/exit 0/uci set network.wan.proto='pppoe'\nuci set network.wan.username='${PPPOE_USERNAME}'\nuci set network.wan.password='${PPPOE_PASSWORD}'\nuci set network.wan.ipv6='auto'\nuci set network.modem=interface\nuci set network.modem.proto='dhcp'\nuci set network.modem.device='eth0'\nuci set network.modem.defaultroute='0'\nuci set network.modem.peerdns='0'\nuci set network.modem.delegate='0'\nuci commit network\n/etc/init.d/network restart\nuci del firewall.cfg03dc81.network\nuci add_list firewall.cfg03dc81.network='wan'\nuci add_list firewall.cfg03dc81.network='wan6'\nuci add_list firewall.cfg03dc81.network='modem'\nuci commit firewall\n/etc/init.d/firewall restart\nexit 0/g" package/base-files/files/etc/rc.local
 
 # Modify default banner
 echo 'Modify default banner...'
