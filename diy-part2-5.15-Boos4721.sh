@@ -14,9 +14,8 @@
 # https://github.com/jarod360/Redmi_AX6/blob/main/diy-part2.sh
 
 COMMIT_COMMENT=$1
-if [ -z "$COMMIT_COMMENT" ]; then
-    COMMIT_COMMENT='Unknown'
-fi
+WIFI_SSID=$2
+WIFI_KEY=$3
 
 # Modify default NTP server
 echo 'Modify default NTP server...'
@@ -37,8 +36,8 @@ sed -i 's/root:$1$WplwC1t5$HBAtVXABp7XbvVjG4193B.:18753:0:99999:7:::/root:$1$V4U
 
 # Ax6修改无线国家代码、命名及密码
 sed -i 's/radio${devidx}.country=US/radio${devidx}.country=CN/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
-sed -i "s/radio\${devidx}.ssid=OpenWrt/radio0.ssid=${{ secrets.WIFI_SSID }}\n\t\t\tset wireless.default_radio1.ssid=${{ secrets.WIFI_SSID }}_2.4G\n\t\t\tset wireless.default_radio1.hidden=1/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
-sed -i "s/radio\${devidx}.key=1234567890/radio\${devidx}.key=${{ secrets.WIFI_KEY }}/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i "s/radio\${devidx}.ssid=OpenWrt/radio0.ssid=${WIFI_SSID}\n\t\t\tset wireless.default_radio1.ssid=${WIFI_SSID}_2.4G\n\t\t\tset wireless.default_radio1.hidden=1/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i "s/radio\${devidx}.key=1234567890/radio\${devidx}.key=${WIFI_KEY}/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
 # Modify default banner
 echo 'Modify default banner...'
