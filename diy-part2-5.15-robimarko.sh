@@ -41,8 +41,12 @@ sed -i 's/root:::0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.::0:99999:7
 
 # Ax6修改无线国家代码、开关、命名、加密方式及密码
 sed -i 's/radio${devidx}.disabled=1/radio${devidx}.country=CN\n\t\t\tset wireless.radio${devidx}.disabled=0/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
-sed -i 's/radio${devidx}.ssid=OpenWrt/radio0.ssid=${{ secrets.WIFI_SSID }}\n\t\t\tset wireless.default_radio1.ssid=${{ secrets.WIFI_SSID }}_2.4G\n\t\t\tset wireless.default_radio1.hidden=1/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
-sed -i 's/radio${devidx}.encryption=none/radio${devidx}.encryption=sae-mixed\n\t\t\tset wireless.default_radio${devidx}.key=${{ secrets.WIFI_KEY }}/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i "s/radio\${devidx}.ssid=OpenWrt/radio0.ssid=${{ secrets.WIFI_SSID }}\n\t\t\tset wireless.default_radio1.ssid=${{ secrets.WIFI_SSID }}_2.4G\n\t\t\tset wireless.default_radio1.hidden=1/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i "s/radio\${devidx}.encryption=none/radio\${devidx}.encryption=sae-mixed\n\t\t\tset wireless.default_radio\${devidx}.key=${{ secrets.WIFI_KEY }}/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
+
+echo "${{ env.REPO_URL }}/tree/${{ env.COMMITHASH }}?branch=${{ env.REPO_BRANCH }}&device=${{ env.TARGET_DEVICE }}"
+echo "${{ secrets.WIFI_SSID }}"
+echo "${{ secrets.WIFI_KEY }}"
 
 # Modify default banner
 echo 'Modify default banner...'
