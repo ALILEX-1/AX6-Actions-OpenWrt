@@ -41,8 +41,8 @@ sed -i 's/root:::0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.::0:99999:7
 
 # Ax6修改无线国家代码、开关、命名、加密方式及密码
 sed -i 's/radio${devidx}.disabled=1/radio${devidx}.country=CN\n\t\t\tset wireless.radio${devidx}.disabled=0/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
-sed -i 's/radio${devidx}.ssid=OpenWrt/radio0.ssid=MERCURY_8888\n\t\t\tset wireless.default_radio1.ssid=MERCURY_8888_2.4G\n\t\t\tset wireless.default_radio1.hidden=1/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
-sed -i 's/radio${devidx}.encryption=none/radio${devidx}.encryption=sae-mixed\n\t\t\tset wireless.default_radio${devidx}.key=824080252/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i 's/radio${devidx}.ssid=OpenWrt/radio0.ssid=${{ secrets.WIFI_SSID }}\n\t\t\tset wireless.default_radio1.ssid=${{ secrets.WIFI_SSID }}_2.4G\n\t\t\tset wireless.default_radio1.hidden=1/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i 's/radio${devidx}.encryption=none/radio${devidx}.encryption=sae-mixed\n\t\t\tset wireless.default_radio${devidx}.key=${{ secrets.WIFI_KEY }}/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
 # Modify default banner
 echo 'Modify default banner...'
@@ -60,22 +60,22 @@ echo " $COMMIT_COMMENT                                               " >>package
 echo " ------------------------------------------------------------- " >>package/base-files/files/etc/banner
 echo "                                                               " >>package/base-files/files/etc/banner
 
-#回滚netdata版本至1.30.1，修复缺少jquery-2.2.4.min.js的问题
-cd feeds/packages
-git config --global user.email "i@5icodes.com"
-git config --global user.name "hnyyghk"
-git revert --no-edit 1278eec776e86659b3e812148796a53d0f865edc
-cd ../../
+#修复缺少jquery-2.2.4.min.js的问题，有两种解决方式
+#1、不使用汉化，使用lede仓库的luci-app-netdata插件，https://github.com/coolsnowwolf/luci/tree/master/applications/luci-app-netdata
+#2、要使用汉化，回滚netdata版本至1.30.1
+#cd feeds/packages
+#git config --global user.email "i@5icodes.com"
+#git config --global user.name "hnyyghk"
+#git revert --no-edit 1278eec776e86659b3e812148796a53d0f865edc
+#cd ../../
 
 #netdata不支持ssl访问，有两种解决方式
-#1、修改编译配置使netdata原生支持ssl访问
-#https://www.right.com.cn/forum/thread-4045278-1-1.html
-sed -i 's/disable-https/enable-https/g' feeds/packages/admin/netdata/Makefile
-sed -i 's/DEPENDS:=/DEPENDS:=+libopenssl /g' feeds/packages/admin/netdata/Makefile
-sed -i 's/\[web\]/[web]\n\tssl certificate = \/etc\/nginx\/conf.d\/_lan.crt\n\tssl key = \/etc\/nginx\/conf.d\/_lan.key/g' feeds/kenzo/luci-app-netdata/root/etc/netdata/netdata.conf
-#2、修改netdata页面端口，配置反向代理http协议19999端口至https协议19998端口
-#https://blog.csdn.net/lawsssscat/article/details/107298336
-#/etc/nginx/conf.d/ssl2netdata.conf
+#1、修改编译配置使netdata原生支持ssl访问，参考https://www.right.com.cn/forum/thread-4045278-1-1.html
+#sed -i 's/disable-https/enable-https/g' feeds/packages/admin/netdata/Makefile
+#sed -i 's/DEPENDS:=/DEPENDS:=+libopenssl /g' feeds/packages/admin/netdata/Makefile
+#sed -i 's/\[web\]/[web]\n\tssl certificate = \/etc\/nginx\/conf.d\/_lan.crt\n\tssl key = \/etc\/nginx\/conf.d\/_lan.key/g' feeds/kenzo/luci-app-netdata/root/etc/netdata/netdata.conf
+#2、修改netdata页面端口，配置反向代理http协议19999端口至https协议19998端口，参考https://blog.csdn.net/lawsssscat/article/details/107298336
+#添加/etc/nginx/conf.d/ssl2netdata.conf如下：
 #server {
 #	listen 19998 ssl;
 #	listen [::]:19998 ssl;
