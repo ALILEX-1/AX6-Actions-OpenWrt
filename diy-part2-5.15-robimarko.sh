@@ -60,14 +60,18 @@ echo " $COMMIT_COMMENT                                               " >>package
 echo " ------------------------------------------------------------- " >>package/base-files/files/etc/banner
 echo "                                                               " >>package/base-files/files/etc/banner
 
+#回滚netdata版本至1.30.1，修复缺少jquery-2.2.4.min.js的问题
+cd feeds/packages
+git config --global user.email "i@5icodes.com"
+git config --global user.name "hnyyghk"
+git revert --no-edit 1278eec776e86659b3e812148796a53d0f865edc
+cd ../../
+
 #netdata不支持ssl访问，有两种解决方式
 #1、修改编译配置使netdata原生支持ssl访问
 #https://www.right.com.cn/forum/thread-4045278-1-1.html
 sed -i 's/disable-https/enable-https/g' feeds/packages/admin/netdata/Makefile
 sed -i 's/DEPENDS:=/DEPENDS:=+libopenssl /g' feeds/packages/admin/netdata/Makefile
-＃sed -i 's/1.33.1/1.34.1/g' feeds/packages/admin/netdata/Makefile
-＃sed -i 's/20ba8695d87187787b27128ac3aab9b09aa29ca6b508c48542e0f7d50ec9322b/8ea0786df0e952209c14efeb02e25339a0769aa3edc029e12816b8ead24a82d7/g' feeds/packages/admin/netdata/Makefile
-＃rm -rf feeds/packages/admin/netdata/patches/005-freebsd.patch
 sed -i 's/\[web\]/[web]\n\tssl certificate = \/etc\/nginx\/conf.d\/_lan.crt\n\tssl key = \/etc\/nginx\/conf.d\/_lan.key/g' feeds/kenzo/luci-app-netdata/root/etc/netdata/netdata.conf
 #2、修改netdata页面端口，配置反向代理http协议19999端口至https协议19998端口
 #https://blog.csdn.net/lawsssscat/article/details/107298336
