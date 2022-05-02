@@ -45,7 +45,7 @@ sed -i 's/radio${devidx}.disabled=1/radio${devidx}.country=CN\n\t\t\tset wireles
 sed -i "s/radio\${devidx}.ssid=OpenWrt/radio0.ssid=${WIFI_SSID}\n\t\t\tset wireless.default_radio1.ssid=${WIFI_SSID}_2.4G\n\t\t\tset wireless.default_radio1.hidden=1/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 sed -i "s/radio\${devidx}.encryption=none/radio\${devidx}.encryption=sae-mixed\n\t\t\tset wireless.default_radio\${devidx}.key=${WIFI_KEY}/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
-# 修改wan网络配置
+# 修改初始化配置
 cat > package/base-files/files/etc/init.d/custom << EOF
 #!/bin/sh /etc/rc.common
 # Copyright (C) 2006-2011 OpenWrt.org
@@ -53,10 +53,10 @@ cat > package/base-files/files/etc/init.d/custom << EOF
 START=18
 
 start() {
-  if [ -f "/dev/ttyCUS0" ];then
+  if [ -f "/etc/custom.tag" ];then
     exit 0;
   fi
-  touch /dev/ttyCUS0
+  touch /etc/custom.tag
 
   uci set network.wan.proto='pppoe'
   uci set network.wan.username='${PPPOE_USERNAME}'
