@@ -87,13 +87,13 @@ uci del smartdns.cfg016bb1.old_enabled
 uci add_list smartdns.cfg016bb1.old_enabled='1'
 uci commit smartdns
 cat >> /etc/smartdns/custom.conf << EOF
-server 8.8.8.8 #GoogleDNS
-server 8.8.4.4 #GoogleDNS
+server-tls 8.8.8.8 #GoogleDNS
+server-tls 8.8.4.4 #GoogleDNS
 server-https https://dns.google/dns-query #GoogleDNS
 server 119.29.29.29 #TencentDNS
 server 2402:4e00:: #TencentDNS
-server 208.67.222.222 #OpenDNS
-server 208.67.220.220 #OpenDNS
+server-tls 208.67.222.222 #OpenDNS
+server-tls 208.67.220.220 #OpenDNS
 server-https https://doh.opendns.com/dns-query #OpenDNS
 server 223.5.5.5 #AlibabaDNS
 server 223.6.6.6 #AlibabaDNS
