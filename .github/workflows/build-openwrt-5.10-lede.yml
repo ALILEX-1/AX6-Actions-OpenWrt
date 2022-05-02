@@ -91,7 +91,7 @@ jobs:
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x $DIY_P2_SH
         cd openwrt
-        $GITHUB_WORKSPACE/$DIY_P2_SH "${{ env.REPO_URL }}/tree/${{ env.COMMITHASH }}?branch=${{ env.REPO_BRANCH }}&device=${{ env.TARGET_DEVICE }}" ${{ secrets.WIFI_SSID }} ${{ secrets.WIFI_KEY }} ${{ secrets.PPPOE_USERNAME }} ${{ secrets.PPPOE_PASSWORD }}  ${{ secrets.SSR_SUBSCRIBE_URL }}  ${{ secrets.SSR_SAVE_WORDS }}
+        $GITHUB_WORKSPACE/$DIY_P2_SH "${{ env.REPO_URL }}/tree/${{ env.COMMITHASH }}?branch=${{ env.REPO_BRANCH }}&device=${{ env.TARGET_DEVICE }}" "${{ secrets.WIFI_SSID }}" "${{ secrets.WIFI_KEY }}" "${{ secrets.PPPOE_USERNAME }}" "${{ secrets.PPPOE_PASSWORD }}"  "${{ secrets.SSR_SUBSCRIBE_URL }}"  "${{ secrets.SSR_SAVE_WORDS }}"
 
     - name: SSH connection to Actions
       uses: P3TERX/ssh2actions@v1.0.0
