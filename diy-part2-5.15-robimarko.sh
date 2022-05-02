@@ -18,6 +18,8 @@ WIFI_SSID=$2
 WIFI_KEY=$3
 PPPOE_USERNAME=$4
 PPPOE_PASSWORD=$5
+SSR_SUBSCRIBE_URL=$6
+SSR_SAVE_WORDS=$7
 
 # Modify default timezone
 echo 'Modify default timezone...'
@@ -46,7 +48,99 @@ sed -i "s/radio\${devidx}.ssid=OpenWrt/radio0.ssid=${WIFI_SSID}\n\t\t\tset wirel
 sed -i "s/radio\${devidx}.encryption=none/radio\${devidx}.encryption=sae-mixed\n\t\t\tset wireless.default_radio\${devidx}.key=${WIFI_KEY}/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
 # 修改初始化配置
-sed -i "s/exit 0/if [ -f \"\/etc\/custom.tag\" ];then\n\texit 0\nfi\ntouch \/etc\/custom.tag\nuci set network.wan.proto='pppoe'\nuci set network.wan.username='${PPPOE_USERNAME}'\nuci set network.wan.password='${PPPOE_PASSWORD}'\nuci set network.wan.ipv6='auto'\nuci set network.modem=interface\nuci set network.modem.proto='dhcp'\nuci set network.modem.device='eth0'\nuci set network.modem.defaultroute='0'\nuci set network.modem.peerdns='0'\nuci set network.modem.delegate='0'\nuci commit network\n\/etc\/init.d\/network restart\nuci del firewall.cfg03dc81.network\nuci add_list firewall.cfg03dc81.network='wan'\nuci add_list firewall.cfg03dc81.network='wan6'\nuci add_list firewall.cfg03dc81.network='modem'\nuci commit firewall\n\/etc\/init.d\/firewall restart\nexit 0/g" package/base-files/files/etc/rc.local
+sed -i "s/exit 0//g" package/base-files/files/etc/rc.local
+cat >> package/base-files/files/etc/rc.local << EOFEOF
+if [ -f "/etc/custom.tag" ];then
+    exit 0
+fi
+touch /etc/custom.tag
+
+uci set smartdns.cfg016bb1.enabled='1'
+uci set smartdns.cfg016bb1.server_name='smartdns'
+uci set smartdns.cfg016bb1.port='5335'
+uci set smartdns.cfg016bb1.tcp_server='1'
+uci set smartdns.cfg016bb1.ipv6_server='1'
+uci set smartdns.cfg016bb1.dualstack_ip_selection='1'
+uci set smartdns.cfg016bb1.prefetch_domain='1'
+uci set smartdns.cfg016bb1.serve_expired='1'
+uci set smartdns.cfg016bb1.redirect='redirect'
+uci set smartdns.cfg016bb1.cache_size='4096'
+uci set smartdns.cfg016bb1.rr_ttl='30'
+uci set smartdns.cfg016bb1.rr_ttl_min='30'
+uci set smartdns.cfg016bb1.rr_ttl_max='300'
+uci set smartdns.cfg016bb1.seconddns_port='6553'
+uci set smartdns.cfg016bb1.seconddns_tcp_server='1'
+uci set smartdns.cfg016bb1.seconddns_no_speed_check='0'
+uci set smartdns.cfg016bb1.seconddns_no_rule_addr='0'
+uci set smartdns.cfg016bb1.seconddns_no_rule_nameserver='0'
+uci set smartdns.cfg016bb1.seconddns_no_rule_ipset='0'
+uci set smartdns.cfg016bb1.seconddns_no_rule_soa='0'
+uci set smartdns.cfg016bb1.seconddns_no_dualstack_selection='0'
+uci set smartdns.cfg016bb1.seconddns_no_cache='0'
+uci set smartdns.cfg016bb1.force_aaaa_soa='0'
+uci set smartdns.cfg016bb1.coredump='0'
+uci del smartdns.cfg016bb1.old_redirect
+uci add_list smartdns.cfg016bb1.old_redirect='redirect'
+uci del smartdns.cfg016bb1.old_port
+uci add_list smartdns.cfg016bb1.old_port='5335'
+uci del smartdns.cfg016bb1.old_enabled
+uci add_list smartdns.cfg016bb1.old_enabled='1'
+uci commit smartdns
+cat >> /etc/smartdns/custom.conf << EOF
+server 8.8.8.8 #GoogleDNS
+server 8.8.4.4 #GoogleDNS
+server-https https://dns.google/dns-query #GoogleDNS
+server 119.29.29.29 #TencentDNS
+server 2402:4e00:: #TencentDNS
+server 208.67.222.222 #OpenDNS
+server 208.67.220.220 #OpenDNS
+server-https https://doh.opendns.com/dns-query #OpenDNS
+server 223.5.5.5 #AlibabaDNS
+server 223.6.6.6 #AlibabaDNS
+server 2400:3200::1 #AlibabaDNS
+server 2400:3200:baba::1 #AlibabaDNS
+server 180.76.76.76 #BaiduDNS
+server 2400:da00::6666 #BaiduDNS
+EOF
+/etc/init.d/smartdns restart
+
+uci set ttyd.cfg01a8ea.ssl='1'
+uci set ttyd.cfg01a8ea.ssl_cert='/etc/nginx/conf.d/_lan.crt'
+uci set ttyd.cfg01a8ea.ssl_key='/etc/nginx/conf.d/_lan.key'
+uci commit ttyd
+/etc/init.d/ttyd restart
+
+uci set shadowsocksr.cfg013fd6.global_server='cfg104a8f'
+uci set shadowsocksr.cfg013fd6.pdnsd_enable='0'
+uci del shadowsocksr.cfg013fd6.tunnel_forward
+uci add_list shadowsocksr.cfg029e1d.subscribe_url='${SSR_SUBSCRIBE_URL}'
+uci set shadowsocksr.cfg029e1d.save_words='${SSR_SAVE_WORDS}'
+uci set shadowsocksr.cfg029e1d.switch='1'
+uci commit shadowsocksr
+/etc/init.d/shadowsocksr restart
+
+uci set network.wan.proto='pppoe'
+uci set network.wan.username='${PPPOE_USERNAME}'
+uci set network.wan.password='${PPPOE_PASSWORD}'
+uci set network.wan.ipv6='auto'
+uci set network.modem=interface
+uci set network.modem.proto='dhcp'
+uci set network.modem.device='eth0'
+uci set network.modem.defaultroute='0'
+uci set network.modem.peerdns='0'
+uci set network.modem.delegate='0'
+uci commit network
+/etc/init.d/network restart
+
+uci del firewall.cfg03dc81.network
+uci add_list firewall.cfg03dc81.network='wan'
+uci add_list firewall.cfg03dc81.network='wan6'
+uci add_list firewall.cfg03dc81.network='modem'
+uci commit firewall
+/etc/init.d/firewall restart
+
+exit 0
+EOFEOF
 
 # Modify default banner
 echo 'Modify default banner...'
