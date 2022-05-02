@@ -87,6 +87,7 @@ uci del smartdns.cfg016bb1.old_enabled
 uci add_list smartdns.cfg016bb1.old_enabled='1'
 uci commit smartdns
 cat >> /etc/smartdns/custom.conf << EOF
+
 server-tls 8.8.8.8 #GoogleDNS
 server-tls 8.8.4.4 #GoogleDNS
 server-https https://dns.google/dns-query #GoogleDNS
