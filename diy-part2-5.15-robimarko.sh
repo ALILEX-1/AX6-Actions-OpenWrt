@@ -46,40 +46,7 @@ sed -i "s/radio\${devidx}.ssid=OpenWrt/radio0.ssid=${WIFI_SSID}\n\t\t\tset wirel
 sed -i "s/radio\${devidx}.encryption=none/radio\${devidx}.encryption=sae-mixed\n\t\t\tset wireless.default_radio\${devidx}.key=${WIFI_KEY}/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
 # 修改初始化配置
-cat > package/base-files/files/etc/init.d/custom << EOF
-#!/bin/sh /etc/rc.common
-# Copyright (C) 2006-2011 OpenWrt.org
-
-START=18
-
-start() {
-  if [ -f "/etc/custom.tag" ];then
-    exit 0;
-  fi
-  touch /etc/custom.tag
-
-  uci set network.wan.proto='pppoe'
-  uci set network.wan.username='${PPPOE_USERNAME}'
-  uci set network.wan.password='${PPPOE_PASSWORD}'
-  uci set network.wan.ipv6='auto'
-
-  uci set network.modem=interface
-  uci set network.modem.proto='dhcp'
-  uci set network.modem.device='eth0'
-  uci set network.modem.defaultroute='0'
-  uci set network.modem.peerdns='0'
-  uci set network.modem.delegate='0'
-
-  uci commit network
-
-  uci del firewall.cfg03dc81.network
-  uci add_list firewall.cfg03dc81.network='wan'
-  uci add_list firewall.cfg03dc81.network='wan6'
-  uci add_list firewall.cfg03dc81.network='modem'
-
-  uci commit firewall
-}
-EOF
+sed -i "s/exit 0/if [ -f \"\/etc\/custom.tag\" ];then\n\texit 0\nfi\ntouch \/etc\/custom.tag\nuci set network.wan.proto='pppoe'\nuci set network.wan.username='${PPPOE_USERNAME}'\nuci set network.wan.password='${PPPOE_PASSWORD}'\nuci set network.wan.ipv6='auto'\nuci set network.modem=interface\nuci set network.modem.proto='dhcp'\nuci set network.modem.device='eth0'\nuci set network.modem.defaultroute='0'\nuci set network.modem.peerdns='0'\nuci set network.modem.delegate='0'\nuci commit network\n\/etc\/init.d\/network restart\nuci del firewall.cfg03dc81.network\nuci add_list firewall.cfg03dc81.network='wan'\nuci add_list firewall.cfg03dc81.network='wan6'\nuci add_list firewall.cfg03dc81.network='modem'\nuci commit firewall\n\/etc\/init.d\/firewall restart\nexit 0/g" package/base-files/files/etc/rc.local
 
 # Modify default banner
 echo 'Modify default banner...'
