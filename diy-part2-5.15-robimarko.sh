@@ -141,32 +141,41 @@ uci set shadowsocksr.cfg029e1d.save_words='${SSR_SAVE_WORDS}'
 uci set shadowsocksr.cfg029e1d.switch='1'
 uci commit shadowsocksr
 
-/usr/bin/lua /usr/share/shadowsocksr/subscribe.lua >>/var/log/ssrplus.log
-
-uci set shadowsocksr.cfg013fd6.global_server='cfg104a8f'
-uci set shadowsocksr.cfg013fd6.pdnsd_enable='0'
-uci del shadowsocksr.cfg013fd6.tunnel_forward
-uci commit shadowsocksr
-/etc/init.d/shadowsocksr restart
+fun &
+echo "rc.local finish" >> /var/log/ssrplus.log
 
 exit 0
+
+fun() {
+    echo "1.sleep begin" >> /var/log/ssrplus.log
+    sleep 30
+    echo "2.subscribe begin" >> /var/log/ssrplus.log
+    /usr/bin/lua /usr/share/shadowsocksr/subscribe.lua >> /var/log/ssrplus.log
+    echo "3.config begin" >> /var/log/ssrplus.log
+    uci set shadowsocksr.cfg013fd6.global_server='cfg104a8f'
+    uci set shadowsocksr.cfg013fd6.pdnsd_enable='0'
+    uci del shadowsocksr.cfg013fd6.tunnel_forward
+    uci commit shadowsocksr
+    /etc/init.d/shadowsocksr restart
+    echo "4.config finish" >> /var/log/ssrplus.log
+}
 EOFEOF
 
 # Modify default banner
 echo 'Modify default banner...'
 build_date=$(date +"%Y-%m-%d %H:%M:%S")
-echo "                                                               " > package/base-files/files/etc/banner
-echo " ██████╗ ██████╗ ███████╗███╗   ██╗██╗    ██╗██████╗ ████████╗ " >>package/base-files/files/etc/banner
-echo "██╔═══██╗██╔══██╗██╔════╝████╗  ██║██║    ██║██╔══██╗╚══██╔══╝ " >>package/base-files/files/etc/banner
-echo "██║   ██║██████╔╝█████╗  ██╔██╗ ██║██║ █╗ ██║██████╔╝   ██║    " >>package/base-files/files/etc/banner
-echo "██║   ██║██╔═══╝ ██╔══╝  ██║╚██╗██║██║███╗██║██╔══██╗   ██║    " >>package/base-files/files/etc/banner
-echo "╚██████╔╝██║     ███████╗██║ ╚████║╚███╔███╔╝██║  ██║   ██║    " >>package/base-files/files/etc/banner
-echo " ╚═════╝ ╚═╝     ╚══════╝╚═╝  ╚═══╝ ╚══╝╚══╝ ╚═╝  ╚═╝   ╚═╝    " >>package/base-files/files/etc/banner
-echo " ------------------------------------------------------------- " >>package/base-files/files/etc/banner
-echo " %D %C ${build_date} by hnyyghk                                " >>package/base-files/files/etc/banner
-echo " $COMMIT_COMMENT                                               " >>package/base-files/files/etc/banner
-echo " ------------------------------------------------------------- " >>package/base-files/files/etc/banner
-echo "                                                               " >>package/base-files/files/etc/banner
+echo "                                                               " >  package/base-files/files/etc/banner
+echo " ██████╗ ██████╗ ███████╗███╗   ██╗██╗    ██╗██████╗ ████████╗ " >> package/base-files/files/etc/banner
+echo "██╔═══██╗██╔══██╗██╔════╝████╗  ██║██║    ██║██╔══██╗╚══██╔══╝ " >> package/base-files/files/etc/banner
+echo "██║   ██║██████╔╝█████╗  ██╔██╗ ██║██║ █╗ ██║██████╔╝   ██║    " >> package/base-files/files/etc/banner
+echo "██║   ██║██╔═══╝ ██╔══╝  ██║╚██╗██║██║███╗██║██╔══██╗   ██║    " >> package/base-files/files/etc/banner
+echo "╚██████╔╝██║     ███████╗██║ ╚████║╚███╔███╔╝██║  ██║   ██║    " >> package/base-files/files/etc/banner
+echo " ╚═════╝ ╚═╝     ╚══════╝╚═╝  ╚═══╝ ╚══╝╚══╝ ╚═╝  ╚═╝   ╚═╝    " >> package/base-files/files/etc/banner
+echo " ------------------------------------------------------------- " >> package/base-files/files/etc/banner
+echo " %D %C ${build_date} by hnyyghk                                " >> package/base-files/files/etc/banner
+echo " $COMMIT_COMMENT                                               " >> package/base-files/files/etc/banner
+echo " ------------------------------------------------------------- " >> package/base-files/files/etc/banner
+echo "                                                               " >> package/base-files/files/etc/banner
 
 #修复netdata缺少jquery-2.2.4.min.js的问题，有两种解决方式
 #1、不使用汉化，使用lede仓库的luci-app-netdata插件，https://github.com/coolsnowwolf/luci/tree/master/applications/luci-app-netdata
