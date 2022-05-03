@@ -115,7 +115,6 @@ uci add_list shadowsocksr.cfg029e1d.subscribe_url='${SSR_SUBSCRIBE_URL}'
 uci set shadowsocksr.cfg029e1d.save_words='${SSR_SAVE_WORDS}'
 uci set shadowsocksr.cfg029e1d.switch='1'
 uci commit shadowsocksr
-/etc/init.d/shadowsocksr restart
 
 /usr/bin/lua /usr/share/shadowsocksr/subscribe.lua >>/var/log/ssrplus.log
 
