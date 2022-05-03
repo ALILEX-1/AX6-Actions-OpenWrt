@@ -55,6 +55,26 @@ if [ -f "/etc/custom.tag" ];then
 fi
 touch /etc/custom.tag
 
+uci set network.wan.proto='pppoe'
+uci set network.wan.username='${PPPOE_USERNAME}'
+uci set network.wan.password='${PPPOE_PASSWORD}'
+uci set network.wan.ipv6='auto'
+uci set network.modem=interface
+uci set network.modem.proto='dhcp'
+uci set network.modem.device='eth0'
+uci set network.modem.defaultroute='0'
+uci set network.modem.peerdns='0'
+uci set network.modem.delegate='0'
+uci commit network
+/etc/init.d/network restart
+
+uci del firewall.cfg03dc81.network
+uci add_list firewall.cfg03dc81.network='wan'
+uci add_list firewall.cfg03dc81.network='wan6'
+uci add_list firewall.cfg03dc81.network='modem'
+uci commit firewall
+/etc/init.d/firewall restart
+
 uci set smartdns.cfg016bb1.enabled='1'
 uci set smartdns.cfg016bb1.server_name='smartdns'
 uci set smartdns.cfg016bb1.port='5335'
@@ -64,7 +84,7 @@ uci set smartdns.cfg016bb1.dualstack_ip_selection='1'
 uci set smartdns.cfg016bb1.prefetch_domain='1'
 uci set smartdns.cfg016bb1.serve_expired='1'
 uci set smartdns.cfg016bb1.redirect='redirect'
-uci set smartdns.cfg016bb1.cache_size='4096'
+uci set smartdns.cfg016bb1.cache_size='8192'
 uci set smartdns.cfg016bb1.rr_ttl='30'
 uci set smartdns.cfg016bb1.rr_ttl_min='30'
 uci set smartdns.cfg016bb1.rr_ttl_max='300'
@@ -88,18 +108,23 @@ uci add_list smartdns.cfg016bb1.old_enabled='1'
 uci commit smartdns
 cat >> /etc/smartdns/custom.conf << EOF
 
+server 114.114.114.114 #114DNS
+server 114.114.115.115 #114DNS
+server-tls 1.1.1.1 #CloudflareDNS
+server-tls 1.0.0.1 #CloudflareDNS
+server 119.29.29.29 #TencentDNS
+server 182.254.116.116 #TencentDNS
+server 2402:4e00:: #TencentDNS
 server-tls 8.8.8.8 #GoogleDNS
 server-tls 8.8.4.4 #GoogleDNS
 server-https https://dns.google/dns-query #GoogleDNS
-server 119.29.29.29 #TencentDNS
-server 2402:4e00:: #TencentDNS
-server-tls 208.67.222.222 #OpenDNS
-server-tls 208.67.220.220 #OpenDNS
-server-https https://doh.opendns.com/dns-query #OpenDNS
 server 223.5.5.5 #AlibabaDNS
 server 223.6.6.6 #AlibabaDNS
 server 2400:3200::1 #AlibabaDNS
 server 2400:3200:baba::1 #AlibabaDNS
+server-tls 208.67.222.222 #OpenDNS
+server-tls 208.67.220.220 #OpenDNS
+server-https https://doh.opendns.com/dns-query #OpenDNS
 server 180.76.76.76 #BaiduDNS
 server 2400:da00::6666 #BaiduDNS
 EOF
@@ -123,26 +148,6 @@ uci set shadowsocksr.cfg013fd6.pdnsd_enable='0'
 uci del shadowsocksr.cfg013fd6.tunnel_forward
 uci commit shadowsocksr
 /etc/init.d/shadowsocksr restart
-
-uci set network.wan.proto='pppoe'
-uci set network.wan.username='${PPPOE_USERNAME}'
-uci set network.wan.password='${PPPOE_PASSWORD}'
-uci set network.wan.ipv6='auto'
-uci set network.modem=interface
-uci set network.modem.proto='dhcp'
-uci set network.modem.device='eth0'
-uci set network.modem.defaultroute='0'
-uci set network.modem.peerdns='0'
-uci set network.modem.delegate='0'
-uci commit network
-/etc/init.d/network restart
-
-uci del firewall.cfg03dc81.network
-uci add_list firewall.cfg03dc81.network='wan'
-uci add_list firewall.cfg03dc81.network='wan6'
-uci add_list firewall.cfg03dc81.network='modem'
-uci commit firewall
-/etc/init.d/firewall restart
 
 exit 0
 EOFEOF
