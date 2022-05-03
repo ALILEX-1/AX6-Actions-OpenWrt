@@ -111,12 +111,17 @@ uci set ttyd.cfg01a8ea.ssl_key='/etc/nginx/conf.d/_lan.key'
 uci commit ttyd
 /etc/init.d/ttyd restart
 
-uci set shadowsocksr.cfg013fd6.global_server='cfg104a8f'
-uci set shadowsocksr.cfg013fd6.pdnsd_enable='0'
-uci del shadowsocksr.cfg013fd6.tunnel_forward
 uci add_list shadowsocksr.cfg029e1d.subscribe_url='${SSR_SUBSCRIBE_URL}'
 uci set shadowsocksr.cfg029e1d.save_words='${SSR_SAVE_WORDS}'
 uci set shadowsocksr.cfg029e1d.switch='1'
+uci commit shadowsocksr
+/etc/init.d/shadowsocksr restart
+
+/usr/bin/lua /usr/share/shadowsocksr/subscribe.lua >>/var/log/ssrplus.log
+
+uci set shadowsocksr.cfg013fd6.global_server='cfg104a8f'
+uci set shadowsocksr.cfg013fd6.pdnsd_enable='0'
+uci del shadowsocksr.cfg013fd6.tunnel_forward
 uci commit shadowsocksr
 /etc/init.d/shadowsocksr restart
 
