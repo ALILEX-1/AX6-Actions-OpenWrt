@@ -50,6 +50,20 @@ sed -i "s/radio\${devidx}.encryption=none/radio\${devidx}.encryption=sae-mixed\n
 # 修改初始化配置
 sed -i "s/exit 0//g" package/base-files/files/etc/rc.local
 cat >> package/base-files/files/etc/rc.local << EOFEOF
+fun() {
+    echo "1.sleep begin" >> /var/log/ssrplus.log
+    sleep 30
+    echo "2.subscribe begin" >> /var/log/ssrplus.log
+    /usr/bin/lua /usr/share/shadowsocksr/subscribe.lua >> /var/log/ssrplus.log
+    echo "3.config begin" >> /var/log/ssrplus.log
+    uci set shadowsocksr.cfg013fd6.global_server='cfg104a8f'
+    uci set shadowsocksr.cfg013fd6.pdnsd_enable='0'
+    uci del shadowsocksr.cfg013fd6.tunnel_forward
+    uci commit shadowsocksr
+    /etc/init.d/shadowsocksr restart
+    echo "4.config finish" >> /var/log/ssrplus.log
+}
+
 if [ -f "/etc/custom.tag" ];then
     exit 0
 fi
@@ -145,20 +159,6 @@ fun &
 echo "rc.local finish" >> /var/log/ssrplus.log
 
 exit 0
-
-fun() {
-    echo "1.sleep begin" >> /var/log/ssrplus.log
-    sleep 30
-    echo "2.subscribe begin" >> /var/log/ssrplus.log
-    /usr/bin/lua /usr/share/shadowsocksr/subscribe.lua >> /var/log/ssrplus.log
-    echo "3.config begin" >> /var/log/ssrplus.log
-    uci set shadowsocksr.cfg013fd6.global_server='cfg104a8f'
-    uci set shadowsocksr.cfg013fd6.pdnsd_enable='0'
-    uci del shadowsocksr.cfg013fd6.tunnel_forward
-    uci commit shadowsocksr
-    /etc/init.d/shadowsocksr restart
-    echo "4.config finish" >> /var/log/ssrplus.log
-}
 EOFEOF
 
 # Modify default banner
