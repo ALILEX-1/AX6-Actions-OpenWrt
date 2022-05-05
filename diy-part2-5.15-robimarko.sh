@@ -14,12 +14,17 @@
 # https://github.com/jarod360/Redmi_AX6/blob/main/diy-part2.sh
 
 COMMIT_COMMENT=$1
+if [ -z "$COMMIT_COMMENT" ]; then
+    COMMIT_COMMENT='Unknown'
+fi
 WIFI_SSID=$2
+if [ -z "$WIFI_SSID" ]; then
+    WIFI_SSID='Unknown'
+fi
 WIFI_KEY=$3
-PPPOE_USERNAME=$4
-PPPOE_PASSWORD=$5
-SSR_SUBSCRIBE_URL=$6
-SSR_SAVE_WORDS=$7
+if [ -z "$WIFI_KEY" ]; then
+    WIFI_KEY='Unknown'
+fi
 
 # Modify default timezone
 echo 'Modify default timezone...'
@@ -48,6 +53,7 @@ sed -i "s/radio\${devidx}.ssid=OpenWrt/radio0.ssid=${WIFI_SSID}\n\t\t\tset wirel
 sed -i "s/radio\${devidx}.encryption=none/radio\${devidx}.encryption=sae-mixed\n\t\t\tset wireless.default_radio\${devidx}.key=${WIFI_KEY}/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
 # 修改初始化配置
+touch package/base-files/files/etc/custom.tag
 sed -i "s/exit 0//g" package/base-files/files/etc/rc.local
 cat >> package/base-files/files/etc/rc.local << EOFEOF
 fun() {
@@ -69,9 +75,17 @@ if [ -f "/etc/custom.tag" ];then
 fi
 touch /etc/custom.tag
 
+PPPOE_USERNAME=""
+PPPOE_PASSWORD=""
+DDNS_DOMAIN=""
+DDNS_USERNAME=""
+DDNS_PASSWORD=""
+SSR_SUBSCRIBE_URL=""
+SSR_SAVE_WORDS=""
+
 uci set network.wan.proto='pppoe'
-uci set network.wan.username='${PPPOE_USERNAME}'
-uci set network.wan.password='${PPPOE_PASSWORD}'
+uci set network.wan.username='\${PPPOE_USERNAME}'
+uci set network.wan.password='\${PPPOE_PASSWORD}'
 uci set network.wan.ipv6='auto'
 uci set network.modem=interface
 uci set network.modem.proto='dhcp'
@@ -150,9 +164,35 @@ uci set ttyd.cfg01a8ea.ssl_key='/etc/nginx/conf.d/_lan.key'
 uci commit ttyd
 /etc/init.d/ttyd restart
 
-uci add_list shadowsocksr.cfg029e1d.subscribe_url='${SSR_SUBSCRIBE_URL}'
-uci set shadowsocksr.cfg029e1d.save_words='${SSR_SAVE_WORDS}'
+uci set autoreboot.cfg01f8be.enable='1'
+uci set autoreboot.cfg01f8be.week='7'
+uci set autoreboot.cfg01f8be.hour='3'
+uci set autoreboot.cfg01f8be.minute='30'
+uci commit autoreboot
+/etc/init.d/autoreboot restart
+
+uci set ddns.test=service
+uci set ddns.test.service_name='aliyun.com'
+uci set ddns.test.use_ipv6='1'
+uci set ddns.test.enabled='1'
+uci set ddns.test.lookup_host='\${DDNS_DOMAIN}'
+uci set ddns.test.domain='\${DDNS_DOMAIN}'
+uci set ddns.test.username='\${DDNS_USERNAME}'
+uci set ddns.test.password='\${DDNS_PASSWORD}'
+uci set ddns.test.ip_source='network'
+uci set ddns.test.ip_network='wan_6'
+uci set ddns.test.interface='wan_6'
+uci set ddns.test.use_syslog='2'
+uci set ddns.test.check_unit='minutes'
+uci set ddns.test.force_unit='minutes'
+uci set ddns.test.retry_unit='seconds'
+uci commit ddns
+/etc/init.d/ddns restart
+
+uci add_list shadowsocksr.cfg029e1d.subscribe_url='\${SSR_SUBSCRIBE_URL}'
+uci set shadowsocksr.cfg029e1d.save_words='\${SSR_SAVE_WORDS}'
 uci set shadowsocksr.cfg029e1d.switch='1'
+uci set shadowsocksr.cfg029e1d.auto_update_time='4'
 uci commit shadowsocksr
 
 fun &
@@ -194,19 +234,19 @@ echo "                                                               " >> packag
 #2、修改netdata页面端口，配置反向代理http协议19999端口至https协议19998端口，参考https://blog.csdn.net/lawsssscat/article/details/107298336
 #添加/etc/nginx/conf.d/ssl2netdata.conf如下：
 #server {
-#	listen 19998 ssl;
-#	listen [::]:19998 ssl;
-#	server_name _ssl2netdata;
-#	include restrict_locally;
-#	ssl_certificate /etc/nginx/conf.d/_lan.crt;
-#	ssl_certificate_key /etc/nginx/conf.d/_lan.key;
-#	ssl_session_cache shared:SSL:32k;
-#	ssl_session_timeout 64m;
-#	location / {
-#		proxy_set_header Host $host;
-#		proxy_set_header X-Real-IP $remote_addr;
-#		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-#		proxy_set_header X-Forwarded-Proto $scheme;
-#		proxy_pass http://localhost:19999;
-#	}
+#    listen 19998 ssl;
+#    listen [::]:19998 ssl;
+#    server_name _ssl2netdata;
+#    include restrict_locally;
+#    ssl_certificate /etc/nginx/conf.d/_lan.crt;
+#    ssl_certificate_key /etc/nginx/conf.d/_lan.key;
+#    ssl_session_cache shared:SSL:32k;
+#    ssl_session_timeout 64m;
+#    location / {
+#        proxy_set_header Host $http_host;
+#        proxy_set_header X-Real-IP $remote_addr;
+#        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#        proxy_set_header X-Forwarded-Proto $scheme;
+#        proxy_pass http://localhost:19999;
+#    }
 #}

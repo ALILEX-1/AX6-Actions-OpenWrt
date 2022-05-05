@@ -14,8 +14,17 @@
 # https://github.com/jarod360/Redmi_AX6/blob/main/diy-part2.sh
 
 COMMIT_COMMENT=$1
+if [ -z "$COMMIT_COMMENT" ]; then
+    COMMIT_COMMENT='Unknown'
+fi
 WIFI_SSID=$2
+if [ -z "$WIFI_SSID" ]; then
+    WIFI_SSID='Unknown'
+fi
 WIFI_KEY=$3
+if [ -z "$WIFI_KEY" ]; then
+    WIFI_KEY='Unknown'
+fi
 
 # Modify default NTP server
 echo 'Modify default NTP server...'
