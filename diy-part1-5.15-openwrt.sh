@@ -25,8 +25,6 @@ mv ../openwrt-temp/* ../openwrt-temp/.[^.]* ./
 git add -A
 git commit -m "temp"
 git pull --rebase
-echo "rebase finish---------"
-git log --oneline -4
 
 # Add a feed source
 #echo 'src-git helloworld https://github.com/fw876/helloworld' >>feeds.conf.default

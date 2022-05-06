@@ -57,17 +57,17 @@ touch package/base-files/files/etc/custom.tag
 sed -i "s/exit 0//g" package/base-files/files/etc/rc.local
 cat >> package/base-files/files/etc/rc.local << EOFEOF
 fun() {
-    echo "1.sleep begin" >> /var/log/ssrplus.log
+    echo "1.sleep begin" >> /etc/custom.tag
     sleep 30
-    echo "2.subscribe begin" >> /var/log/ssrplus.log
-    /usr/bin/lua /usr/share/shadowsocksr/subscribe.lua >> /var/log/ssrplus.log
-    echo "3.config begin" >> /var/log/ssrplus.log
+    echo "2.subscribe begin" >> /etc/custom.tag
+    /usr/bin/lua /usr/share/shadowsocksr/subscribe.lua >> /etc/custom.tag
+    echo "3.config begin" >> /etc/custom.tag
     uci set shadowsocksr.cfg013fd6.global_server='cfg104a8f'
     uci set shadowsocksr.cfg013fd6.pdnsd_enable='0'
     uci del shadowsocksr.cfg013fd6.tunnel_forward
     uci commit shadowsocksr
-    /etc/init.d/shadowsocksr restart
-    echo "4.config finish" >> /var/log/ssrplus.log
+    /etc/init.d/shadowsocksr restart >> /etc/custom.tag
+    echo "shadowsocksr finish" >> /etc/custom.tag
 }
 
 if [ -f "/etc/custom.tag" ];then
@@ -84,8 +84,8 @@ SSR_SUBSCRIBE_URL=""
 SSR_SAVE_WORDS=""
 
 uci set network.wan.proto='pppoe'
-uci set network.wan.username='\${PPPOE_USERNAME}'
-uci set network.wan.password='\${PPPOE_PASSWORD}'
+uci set network.wan.username="\${PPPOE_USERNAME}"
+uci set network.wan.password="\${PPPOE_PASSWORD}"
 uci set network.wan.ipv6='auto'
 uci set network.modem=interface
 uci set network.modem.proto='dhcp'
@@ -94,14 +94,16 @@ uci set network.modem.defaultroute='0'
 uci set network.modem.peerdns='0'
 uci set network.modem.delegate='0'
 uci commit network
-/etc/init.d/network restart
+/etc/init.d/network restart >> /etc/custom.tag
+echo "network finish" >> /etc/custom.tag
 
 uci del firewall.cfg03dc81.network
 uci add_list firewall.cfg03dc81.network='wan'
 uci add_list firewall.cfg03dc81.network='wan6'
 uci add_list firewall.cfg03dc81.network='modem'
 uci commit firewall
-/etc/init.d/firewall restart
+/etc/init.d/firewall restart >> /etc/custom.tag
+echo "firewall finish" >> /etc/custom.tag
 
 uci set smartdns.cfg016bb1.enabled='1'
 uci set smartdns.cfg016bb1.server_name='smartdns'
@@ -156,29 +158,32 @@ server-https https://doh.opendns.com/dns-query #OpenDNS
 server 180.76.76.76 #BaiduDNS
 server 2400:da00::6666 #BaiduDNS
 EOF
-/etc/init.d/smartdns restart
+/etc/init.d/smartdns restart >> /etc/custom.tag
+echo "smartdns finish" >> /etc/custom.tag
 
 uci set ttyd.cfg01a8ea.ssl='1'
 uci set ttyd.cfg01a8ea.ssl_cert='/etc/nginx/conf.d/_lan.crt'
 uci set ttyd.cfg01a8ea.ssl_key='/etc/nginx/conf.d/_lan.key'
 uci commit ttyd
-/etc/init.d/ttyd restart
+/etc/init.d/ttyd restart >> /etc/custom.tag
+echo "ttyd finish" >> /etc/custom.tag
 
 uci set autoreboot.cfg01f8be.enable='1'
 uci set autoreboot.cfg01f8be.week='7'
 uci set autoreboot.cfg01f8be.hour='3'
 uci set autoreboot.cfg01f8be.minute='30'
 uci commit autoreboot
-/etc/init.d/autoreboot restart
+/etc/init.d/autoreboot restart >> /etc/custom.tag
+echo "autoreboot finish" >> /etc/custom.tag
 
 uci set ddns.test=service
 uci set ddns.test.service_name='aliyun.com'
 uci set ddns.test.use_ipv6='1'
 uci set ddns.test.enabled='1'
-uci set ddns.test.lookup_host='\${DDNS_DOMAIN}'
-uci set ddns.test.domain='\${DDNS_DOMAIN}'
-uci set ddns.test.username='\${DDNS_USERNAME}'
-uci set ddns.test.password='\${DDNS_PASSWORD}'
+uci set ddns.test.lookup_host="\${DDNS_DOMAIN}"
+uci set ddns.test.domain="\${DDNS_DOMAIN}"
+uci set ddns.test.username="\${DDNS_USERNAME}"
+uci set ddns.test.password="\${DDNS_PASSWORD}"
 uci set ddns.test.ip_source='network'
 uci set ddns.test.ip_network='wan_6'
 uci set ddns.test.interface='wan_6'
@@ -187,16 +192,17 @@ uci set ddns.test.check_unit='minutes'
 uci set ddns.test.force_unit='minutes'
 uci set ddns.test.retry_unit='seconds'
 uci commit ddns
-/etc/init.d/ddns restart
+/etc/init.d/ddns restart >> /etc/custom.tag
+echo "ddns finish" >> /etc/custom.tag
 
-uci add_list shadowsocksr.cfg029e1d.subscribe_url='\${SSR_SUBSCRIBE_URL}'
-uci set shadowsocksr.cfg029e1d.save_words='\${SSR_SAVE_WORDS}'
+uci add_list shadowsocksr.cfg029e1d.subscribe_url="\${SSR_SUBSCRIBE_URL}"
+uci set shadowsocksr.cfg029e1d.save_words="\${SSR_SAVE_WORDS}"
 uci set shadowsocksr.cfg029e1d.switch='1'
 uci set shadowsocksr.cfg029e1d.auto_update_time='4'
 uci commit shadowsocksr
 
 fun &
-echo "rc.local finish" >> /var/log/ssrplus.log
+echo "rc.local finish" >> /etc/custom.tag
 
 exit 0
 EOFEOF
