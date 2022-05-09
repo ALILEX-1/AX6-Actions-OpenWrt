@@ -53,7 +53,7 @@ sed -i "s/radio\${devidx}.ssid=OpenWrt/radio0.ssid=${WIFI_SSID}\n\t\t\tset wirel
 sed -i "s/radio\${devidx}.encryption=none/radio\${devidx}.encryption=sae-mixed\n\t\t\tset wireless.default_radio\${devidx}.key=${WIFI_KEY}/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
 # ddns添加cloudflare.com-v4支持
-sed -i 's/changeip.com/changeip.com\ncloudflare.com-v4/g' packages/net/ddns-scripts/files/usr/share/ddns/list
+sed -i 's/changeip.com/changeip.com\ncloudflare.com-v4/g' feeds/packages/net/ddns-scripts/files/usr/share/ddns/list
 
 # 修改初始化配置
 touch package/base-files/files/etc/custom.tag
