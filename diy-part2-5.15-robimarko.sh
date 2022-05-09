@@ -52,6 +52,9 @@ sed -i 's/radio${devidx}.disabled=1/radio${devidx}.country=CN\n\t\t\tset wireles
 sed -i "s/radio\${devidx}.ssid=OpenWrt/radio0.ssid=${WIFI_SSID}\n\t\t\tset wireless.default_radio1.ssid=${WIFI_SSID}_2.4G\n\t\t\tset wireless.default_radio1.hidden=1/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 sed -i "s/radio\${devidx}.encryption=none/radio\${devidx}.encryption=sae-mixed\n\t\t\tset wireless.default_radio\${devidx}.key=${WIFI_KEY}/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
+# ddns添加cloudflare.com-v4支持
+sed -i 's/changeip.com/changeip.com\ncloudflare.com-v4/g' packages/net/ddns-scripts/files/usr/share/ddns/list
+
 # 修改初始化配置
 touch package/base-files/files/etc/custom.tag
 sed -i "s/exit 0//g" package/base-files/files/etc/rc.local
@@ -177,7 +180,7 @@ uci commit autoreboot
 echo "autoreboot finish" >> /etc/custom.tag
 
 uci set ddns.test=service
-uci set ddns.test.service_name='aliyun.com'
+uci set ddns.test.service_name='cloudflare.com-v4'
 uci set ddns.test.use_ipv6='1'
 uci set ddns.test.enabled='1'
 uci set ddns.test.lookup_host="\${DDNS_DOMAIN}"
