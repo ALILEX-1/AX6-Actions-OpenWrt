@@ -115,7 +115,7 @@ fun() {
     uci set smartdns.cfg016bb1.dualstack_ip_selection='1'
     uci set smartdns.cfg016bb1.prefetch_domain='1'
     uci set smartdns.cfg016bb1.serve_expired='1'
-    uci set smartdns.cfg016bb1.redirect='redirect'
+    uci set smartdns.cfg016bb1.redirect='dnsmasq-upstream'
     uci set smartdns.cfg016bb1.cache_size='8192'
     uci set smartdns.cfg016bb1.rr_ttl='30'
     uci set smartdns.cfg016bb1.rr_ttl_min='30'
@@ -138,8 +138,12 @@ fun() {
     uci del smartdns.cfg016bb1.old_enabled
     uci add_list smartdns.cfg016bb1.old_enabled='1'
     uci commit smartdns
+    touch /etc/smartdns/ad.conf
     cat >> /etc/smartdns/custom.conf << EOF
 
+
+# Include another configuration options
+conf-file /etc/smartdns/ad.conf
 
 # remote dns server list
 server 114.114.114.114 #114DNS
@@ -162,7 +166,45 @@ server-https https://doh.opendns.com/dns-query #OpenDNS
 server 180.76.76.76 #BaiduDNS
 server 2400:da00::6666 #BaiduDNS
 EOF
-    touch /etc/smartdns/aaa.conf
+    /etc/init.d/smartdns restart >> /etc/custom.tag
+    echo "smartdns remote dns server list finish" >> /etc/custom.tag
+
+    sleep 30
+
+    uci set ddns.test=service
+    uci set ddns.test.service_name='cloudflare.com-v4'
+    uci set ddns.test.use_ipv6='1'
+    uci set ddns.test.enabled='1'
+    uci set ddns.test.lookup_host="\${DDNS_LOOKUP_HOST}"
+    uci set ddns.test.domain="\${DDNS_DOMAIN}"
+    uci set ddns.test.username="\${DDNS_USERNAME}"
+    uci set ddns.test.password="\${DDNS_PASSWORD}"
+    uci set ddns.test.ip_source='network'
+    uci set ddns.test.ip_network='wan_6'
+    uci set ddns.test.interface='wan_6'
+    uci set ddns.test.use_syslog='2'
+    uci set ddns.test.check_unit='minutes'
+    uci set ddns.test.force_unit='minutes'
+    uci set ddns.test.retry_unit='seconds'
+    uci commit ddns
+    /etc/init.d/ddns restart >> /etc/custom.tag
+    echo "ddns finish" >> /etc/custom.tag
+
+    uci add_list shadowsocksr.cfg029e1d.subscribe_url="\${SSR_SUBSCRIBE_URL}"
+    uci set shadowsocksr.cfg029e1d.save_words="\${SSR_SAVE_WORDS}"
+    uci set shadowsocksr.cfg029e1d.switch='1'
+    uci set shadowsocksr.cfg029e1d.auto_update_time='4'
+    uci commit shadowsocksr
+    /usr/bin/lua /usr/share/shadowsocksr/subscribe.lua >> /etc/custom.tag
+    uci set shadowsocksr.cfg013fd6.global_server='cfg104a8f'
+    uci set shadowsocksr.cfg013fd6.pdnsd_enable='0'
+    uci del shadowsocksr.cfg013fd6.tunnel_forward
+    uci commit shadowsocksr
+    /etc/init.d/shadowsocksr restart >> /etc/custom.tag
+    echo "shadowsocksr finish" >> /etc/custom.tag
+
+    sleep 30
+
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-smartdns.conf 2>> /etc/custom.tag
     if [ -f "/etc/smartdns/anti-ad-smartdns.conf" ];then
         grep "^address" /etc/smartdns/anti-ad-smartdns.conf >> /etc/smartdns/aaa.conf
@@ -249,46 +291,12 @@ address /f2.market.mi-img.com/#
 address /f1.market.mi-img.com/#
 EOF
     sort -u /etc/smartdns/aaa.conf > /etc/smartdns/bbb.conf
-    echo -e "\n# block ad domain list" >> /etc/smartdns/address.conf
-    cat /etc/smartdns/bbb.conf >> /etc/smartdns/address.conf
+    echo "# block ad domain list" >> /etc/smartdns/ad.conf
+    cat /etc/smartdns/bbb.conf >> /etc/smartdns/ad.conf
     rm -f /etc/smartdns/aaa.conf
     rm -f /etc/smartdns/bbb.conf
     /etc/init.d/smartdns restart >> /etc/custom.tag
-    echo "smartdns finish" >> /etc/custom.tag
-
-    sleep 30
-
-    uci set ddns.test=service
-    uci set ddns.test.service_name='cloudflare.com-v4'
-    uci set ddns.test.use_ipv6='1'
-    uci set ddns.test.enabled='1'
-    uci set ddns.test.lookup_host="\${DDNS_LOOKUP_HOST}"
-    uci set ddns.test.domain="\${DDNS_DOMAIN}"
-    uci set ddns.test.username="\${DDNS_USERNAME}"
-    uci set ddns.test.password="\${DDNS_PASSWORD}"
-    uci set ddns.test.ip_source='network'
-    uci set ddns.test.ip_network='wan_6'
-    uci set ddns.test.interface='wan_6'
-    uci set ddns.test.use_syslog='2'
-    uci set ddns.test.check_unit='minutes'
-    uci set ddns.test.force_unit='minutes'
-    uci set ddns.test.retry_unit='seconds'
-    uci commit ddns
-    /etc/init.d/ddns restart >> /etc/custom.tag
-    echo "ddns finish" >> /etc/custom.tag
-
-    uci add_list shadowsocksr.cfg029e1d.subscribe_url="\${SSR_SUBSCRIBE_URL}"
-    uci set shadowsocksr.cfg029e1d.save_words="\${SSR_SAVE_WORDS}"
-    uci set shadowsocksr.cfg029e1d.switch='1'
-    uci set shadowsocksr.cfg029e1d.auto_update_time='4'
-    uci commit shadowsocksr
-    /usr/bin/lua /usr/share/shadowsocksr/subscribe.lua >> /etc/custom.tag
-    uci set shadowsocksr.cfg013fd6.global_server='cfg104a8f'
-    uci set shadowsocksr.cfg013fd6.pdnsd_enable='0'
-    uci del shadowsocksr.cfg013fd6.tunnel_forward
-    uci commit shadowsocksr
-    /etc/init.d/shadowsocksr restart >> /etc/custom.tag
-    echo "shadowsocksr finish" >> /etc/custom.tag
+    echo "smartdns block ad domain list finish" >> /etc/custom.tag
 }
 
 if [ -f "/etc/custom.tag" ];then
