@@ -59,6 +59,7 @@ cat >> package/base-files/files/etc/rc.local << EOFEOF
 fun() {
     PPPOE_USERNAME=""
     PPPOE_PASSWORD=""
+    DDNS_LOOKUP_HOST=""
     DDNS_DOMAIN=""
     DDNS_USERNAME=""
     DDNS_PASSWORD=""
@@ -261,7 +262,7 @@ EOF
     uci set ddns.test.service_name='cloudflare.com-v4'
     uci set ddns.test.use_ipv6='1'
     uci set ddns.test.enabled='1'
-    uci set ddns.test.lookup_host="\${DDNS_DOMAIN}"
+    uci set ddns.test.lookup_host="\${DDNS_LOOKUP_HOST}"
     uci set ddns.test.domain="\${DDNS_DOMAIN}"
     uci set ddns.test.username="\${DDNS_USERNAME}"
     uci set ddns.test.password="\${DDNS_PASSWORD}"
