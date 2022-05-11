@@ -65,6 +65,8 @@ fun() {
     SSR_SUBSCRIBE_URL=""
     SSR_SAVE_WORDS=""
 
+    sleep 30
+
     uci set network.wan.proto='pppoe'
     uci set network.wan.username="\${PPPOE_USERNAME}"
     uci set network.wan.password="\${PPPOE_PASSWORD}"
@@ -79,7 +81,7 @@ fun() {
     /etc/init.d/network restart >> /etc/custom.tag
     echo "network finish" >> /etc/custom.tag
 
-    sleep 60
+    sleep 30
 
     uci del firewall.cfg03dc81.network
     uci add_list firewall.cfg03dc81.network='wan'
@@ -88,8 +90,6 @@ fun() {
     uci commit firewall
     /etc/init.d/firewall restart >> /etc/custom.tag
     echo "firewall finish" >> /etc/custom.tag
-
-    sleep 60
 
     uci set ttyd.cfg01a8ea.ssl='1'
     uci set ttyd.cfg01a8ea.ssl_cert='/etc/nginx/conf.d/_lan.crt'
@@ -137,50 +137,30 @@ fun() {
     uci del smartdns.cfg016bb1.old_enabled
     uci add_list smartdns.cfg016bb1.old_enabled='1'
     uci commit smartdns
-    cat >> /etc/smartdns/custom.conf << EOF
+    cat >> /etc/smartdns/custom.conf << -EOF
 
 
-    # remote dns server list
-    server 114.114.114.114 #114DNS
-    server 114.114.115.115 #114DNS
-    server-tls 1.1.1.1 #CloudflareDNS
-    server-tls 1.0.0.1 #CloudflareDNS
-    server 119.29.29.29 #TencentDNS
-    server 182.254.116.116 #TencentDNS
-    server 2402:4e00:: #TencentDNS
-    server-tls 8.8.8.8 #GoogleDNS
-    server-tls 8.8.4.4 #GoogleDNS
-    server-https https://dns.google/dns-query #GoogleDNS
-    server 223.5.5.5 #AlibabaDNS
-    server 223.6.6.6 #AlibabaDNS
-    server 2400:3200::1 #AlibabaDNS
-    server 2400:3200:baba::1 #AlibabaDNS
-    server-tls 208.67.222.222 #OpenDNS
-    server-tls 208.67.220.220 #OpenDNS
-    server-https https://doh.opendns.com/dns-query #OpenDNS
-    server 180.76.76.76 #BaiduDNS
-    server 2400:da00::6666 #BaiduDNS
+# remote dns server list
+server 114.114.114.114 #114DNS
+server 114.114.115.115 #114DNS
+server-tls 1.1.1.1 #CloudflareDNS
+server-tls 1.0.0.1 #CloudflareDNS
+server 119.29.29.29 #TencentDNS
+server 182.254.116.116 #TencentDNS
+server 2402:4e00:: #TencentDNS
+server-tls 8.8.8.8 #GoogleDNS
+server-tls 8.8.4.4 #GoogleDNS
+server-https https://dns.google/dns-query #GoogleDNS
+server 223.5.5.5 #AlibabaDNS
+server 223.6.6.6 #AlibabaDNS
+server 2400:3200::1 #AlibabaDNS
+server 2400:3200:baba::1 #AlibabaDNS
+server-tls 208.67.222.222 #OpenDNS
+server-tls 208.67.220.220 #OpenDNS
+server-https https://doh.opendns.com/dns-query #OpenDNS
+server 180.76.76.76 #BaiduDNS
+server 2400:da00::6666 #BaiduDNS
     EOF
-    /etc/init.d/smartdns restart >> /etc/custom.tag
-    echo "smartdns remote dns server list finish" >> /etc/custom.tag
-
-    sleep 60
-
-    uci add_list shadowsocksr.cfg029e1d.subscribe_url="\${SSR_SUBSCRIBE_URL}"
-    uci set shadowsocksr.cfg029e1d.save_words="\${SSR_SAVE_WORDS}"
-    uci set shadowsocksr.cfg029e1d.switch='1'
-    uci set shadowsocksr.cfg029e1d.auto_update_time='4'
-    uci commit shadowsocksr
-    /usr/bin/lua /usr/share/shadowsocksr/subscribe.lua >> /etc/custom.tag
-    uci set shadowsocksr.cfg013fd6.global_server='cfg104a8f'
-    uci set shadowsocksr.cfg013fd6.pdnsd_enable='0'
-    uci del shadowsocksr.cfg013fd6.tunnel_forward
-    uci commit shadowsocksr
-    /etc/init.d/shadowsocksr restart >> /etc/custom.tag
-    echo "shadowsocksr finish" >> /etc/custom.tag
-
-    sleep 60
-
     touch /etc/smartdns/aaa.conf
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-smartdns.conf >> /etc/custom.tag
     if [ -f "/etc/smartdns/anti-ad-smartdns.conf" ];then
@@ -211,61 +191,61 @@ fun() {
     if [ -f "/etc/smartdns/hosts" ];then
         grep "^127" /etc/smartdns/hosts > /etc/smartdns/host
         sed -i 's/127.0.0.1 /address \//g;s/$/&\/#/g' /etc/smartdns/host
-        cat /etc/smartdns/host >> /etc/smartdns/aaa.conf
+        cat /etc/smartdns/host | tr -d "\r" >> /etc/smartdns/aaa.conf
         rm -f /etc/smartdns/hosts
         rm -f /etc/smartdns/host
     fi
-    cat >> /etc/smartdns/aaa.conf << EOF
-    address /ad.xiaomi.com/#
-    address /ad1.xiaomi.com/#
-    address /ad.mi.com/#
-    address /tat.pandora.xiaomi.com/#
-    address /api.ad.xiaomi.com/#
-    address /t7z.cupid.ptqy.gitv.tv/#
-    address /fix.hpplay.cn/#
-    address /rps.hpplay.cn/#
-    address /imdns.hpplay.cn/#
-    address /f5.market.mi-img.com/#
-    address /devicemgr.hpplay.cn/#
-    address /rp.hpplay.cn/#
-    address /tvapp.hpplay.cn/#
-    address /pin.hpplay.cn/#
-    address /adcdn.hpplay.cn/#
-    address /sl.hpplay.cn/#
-    address /vipauth.hpplay.cn/#
-    address /vipsdkauth.hpplay.cn/#
-    address /sdkauth.hpplay.cn/#
-    address /adeng.hpplay.cn/#
-    address /conf.hpplay.cn/#
-    address /image.hpplay.cn/#
-    address /hotupgrade.hpplay.cn/#
-    address /t7z.cupid.ptqy.gitv.tv/#
-    address /cloud.hpplay.cn/#
-    address /ad.hpplay.cn/#
-    address /adc.hpplay.cn/#
-    address /gslb.hpplay.cn/#
-    address /cdn1.hpplay.cn/#
-    address /ftp.hpplay.com.cn/#
-    address /rp.hpplay.com.cn/#
-    address /cdn.hpplay.com.cn/#
-    address /userapi.hpplay.com.cn/#
-    address /leboapi.hpplay.com.cn/#
-    address /api.hpplay.com.cn/#
-    address /h5.hpplay.com.cn/#
-    address /hpplay.cdn.cibn.cc/#
-    address /logonext.tv.kuyun.com/#
-    address /config.kuyun.com/#
-    address /f5.market.xiaomi.com/#
-    address /f4.market.xiaomi.com/#
-    address /f3.market.xiaomi.com/#
-    address /f2.market.xiaomi.com/#
-    address /f1.market.xiaomi.com/#
-    address /video.market.xiaomi.com/#
-    address /f5.market.mi-img.com/#
-    address /f4.market.mi-img.com/#
-    address /f3.market.mi-img.com/#
-    address /f2.market.mi-img.com/#
-    address /f1.market.mi-img.com/#
+    cat >> /etc/smartdns/aaa.conf << -EOF
+address /ad.xiaomi.com/#
+address /ad1.xiaomi.com/#
+address /ad.mi.com/#
+address /tat.pandora.xiaomi.com/#
+address /api.ad.xiaomi.com/#
+address /t7z.cupid.ptqy.gitv.tv/#
+address /fix.hpplay.cn/#
+address /rps.hpplay.cn/#
+address /imdns.hpplay.cn/#
+address /f5.market.mi-img.com/#
+address /devicemgr.hpplay.cn/#
+address /rp.hpplay.cn/#
+address /tvapp.hpplay.cn/#
+address /pin.hpplay.cn/#
+address /adcdn.hpplay.cn/#
+address /sl.hpplay.cn/#
+address /vipauth.hpplay.cn/#
+address /vipsdkauth.hpplay.cn/#
+address /sdkauth.hpplay.cn/#
+address /adeng.hpplay.cn/#
+address /conf.hpplay.cn/#
+address /image.hpplay.cn/#
+address /hotupgrade.hpplay.cn/#
+address /t7z.cupid.ptqy.gitv.tv/#
+address /cloud.hpplay.cn/#
+address /ad.hpplay.cn/#
+address /adc.hpplay.cn/#
+address /gslb.hpplay.cn/#
+address /cdn1.hpplay.cn/#
+address /ftp.hpplay.com.cn/#
+address /rp.hpplay.com.cn/#
+address /cdn.hpplay.com.cn/#
+address /userapi.hpplay.com.cn/#
+address /leboapi.hpplay.com.cn/#
+address /api.hpplay.com.cn/#
+address /h5.hpplay.com.cn/#
+address /hpplay.cdn.cibn.cc/#
+address /logonext.tv.kuyun.com/#
+address /config.kuyun.com/#
+address /f5.market.xiaomi.com/#
+address /f4.market.xiaomi.com/#
+address /f3.market.xiaomi.com/#
+address /f2.market.xiaomi.com/#
+address /f1.market.xiaomi.com/#
+address /video.market.xiaomi.com/#
+address /f5.market.mi-img.com/#
+address /f4.market.mi-img.com/#
+address /f3.market.mi-img.com/#
+address /f2.market.mi-img.com/#
+address /f1.market.mi-img.com/#
     EOF
     sort -u /etc/smartdns/aaa.conf > /etc/smartdns/bbb.conf
     echo -e "\n# block ad domain list" >> /etc/smartdns/address.conf
@@ -273,9 +253,9 @@ fun() {
     rm -f /etc/smartdns/aaa.conf
     rm -f /etc/smartdns/bbb.conf
     /etc/init.d/smartdns restart >> /etc/custom.tag
-    echo "smartdns block ad domain list finish" >> /etc/custom.tag
+    echo "smartdns finish" >> /etc/custom.tag
 
-    sleep 60
+    sleep 30
 
     uci set ddns.test=service
     uci set ddns.test.service_name='cloudflare.com-v4'
@@ -295,6 +275,19 @@ fun() {
     uci commit ddns
     /etc/init.d/ddns restart >> /etc/custom.tag
     echo "ddns finish" >> /etc/custom.tag
+
+    uci add_list shadowsocksr.cfg029e1d.subscribe_url="\${SSR_SUBSCRIBE_URL}"
+    uci set shadowsocksr.cfg029e1d.save_words="\${SSR_SAVE_WORDS}"
+    uci set shadowsocksr.cfg029e1d.switch='1'
+    uci set shadowsocksr.cfg029e1d.auto_update_time='4'
+    uci commit shadowsocksr
+    /usr/bin/lua /usr/share/shadowsocksr/subscribe.lua >> /etc/custom.tag
+    uci set shadowsocksr.cfg013fd6.global_server='cfg104a8f'
+    uci set shadowsocksr.cfg013fd6.pdnsd_enable='0'
+    uci del shadowsocksr.cfg013fd6.tunnel_forward
+    uci commit shadowsocksr
+    /etc/init.d/shadowsocksr restart >> /etc/custom.tag
+    echo "shadowsocksr finish" >> /etc/custom.tag
 }
 
 if [ -f "/etc/custom.tag" ];then
