@@ -137,7 +137,7 @@ fun() {
     uci del smartdns.cfg016bb1.old_enabled
     uci add_list smartdns.cfg016bb1.old_enabled='1'
     uci commit smartdns
-    cat >> /etc/smartdns/custom.conf << -EOF
+    cat >> /etc/smartdns/custom.conf << EOF
 
 
 # remote dns server list
@@ -160,14 +160,14 @@ server-tls 208.67.220.220 #OpenDNS
 server-https https://doh.opendns.com/dns-query #OpenDNS
 server 180.76.76.76 #BaiduDNS
 server 2400:da00::6666 #BaiduDNS
-    EOF
+EOF
     touch /etc/smartdns/aaa.conf
-    wget -c -P /etc/smartdns https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-smartdns.conf >> /etc/custom.tag
+    wget -c -P /etc/smartdns https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-smartdns.conf 2>> /etc/custom.tag
     if [ -f "/etc/smartdns/anti-ad-smartdns.conf" ];then
         grep "^address" /etc/smartdns/anti-ad-smartdns.conf >> /etc/smartdns/aaa.conf
         rm -f /etc/smartdns/anti-ad-smartdns.conf
     fi
-    wget -c -P /etc/smartdns https://raw.githubusercontent.com/jdlingyu/ad-wars/master/hosts >> /etc/custom.tag
+    wget -c -P /etc/smartdns https://raw.githubusercontent.com/jdlingyu/ad-wars/master/hosts 2>> /etc/custom.tag
     if [ -f "/etc/smartdns/hosts" ];then
         grep "^127" /etc/smartdns/hosts > /etc/smartdns/host
         sed -i '1d' /etc/smartdns/host
@@ -179,7 +179,7 @@ server 2400:da00::6666 #BaiduDNS
         rm -f /etc/smartdns/hosts
         rm -f /etc/smartdns/host
     fi
-    wget -c -P /etc/smartdns https://raw.githubusercontent.com/VeleSila/yhosts/master/hosts.txt >> /etc/custom.tag
+    wget -c -P /etc/smartdns https://raw.githubusercontent.com/VeleSila/yhosts/master/hosts.txt 2>> /etc/custom.tag
     if [ -f "/etc/smartdns/hosts.txt" ];then
         grep "^0" /etc/smartdns/hosts.txt > /etc/smartdns/host.txt
         sed -i 's/0.0.0.0 /address \//g;s/$/&\/#/g' /etc/smartdns/host.txt
@@ -187,7 +187,7 @@ server 2400:da00::6666 #BaiduDNS
         rm -f /etc/smartdns/hosts.txt
         rm -f /etc/smartdns/host.txt
     fi
-    wget -c -P /etc/smartdns https://raw.githubusercontent.com/Goooler/1024_hosts/master/hosts >> /etc/custom.tag
+    wget -c -P /etc/smartdns https://raw.githubusercontent.com/Goooler/1024_hosts/master/hosts 2>> /etc/custom.tag
     if [ -f "/etc/smartdns/hosts" ];then
         grep "^127" /etc/smartdns/hosts > /etc/smartdns/host
         sed -i 's/127.0.0.1 /address \//g;s/$/&\/#/g' /etc/smartdns/host
@@ -195,7 +195,7 @@ server 2400:da00::6666 #BaiduDNS
         rm -f /etc/smartdns/hosts
         rm -f /etc/smartdns/host
     fi
-    cat >> /etc/smartdns/aaa.conf << -EOF
+    cat >> /etc/smartdns/aaa.conf << EOF
 address /ad.xiaomi.com/#
 address /ad1.xiaomi.com/#
 address /ad.mi.com/#
@@ -246,7 +246,7 @@ address /f4.market.mi-img.com/#
 address /f3.market.mi-img.com/#
 address /f2.market.mi-img.com/#
 address /f1.market.mi-img.com/#
-    EOF
+EOF
     sort -u /etc/smartdns/aaa.conf > /etc/smartdns/bbb.conf
     echo -e "\n# block ad domain list" >> /etc/smartdns/address.conf
     cat /etc/smartdns/bbb.conf >> /etc/smartdns/address.conf
