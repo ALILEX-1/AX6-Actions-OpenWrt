@@ -43,7 +43,7 @@ done
 
 mkdir custom-feed/applications
 
-for i in "luci-app-vlmcsd" "luci-app-mwan3helper" "luci-app-syncdial"; do \
+for i in "luci-app-vlmcsd"; do \
   svn checkout "https://github.com/coolsnowwolf/luci/trunk/applications/$i" "custom-feed/applications/$i"; \
 done
 
