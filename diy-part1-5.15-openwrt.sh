@@ -15,13 +15,25 @@
 
 git config --global user.email "i@5icodes.com"
 git config --global user.name "hnyyghk"
-git reset 0d2d52df69e91fe2f6e3e65750c0728fc45f5ab2
+git reset 810eac8c7ffad958345f8fd02f83636afecf7fcd
+echo "openwrt: before rm -rf *"
+ls
 rm -rf *
-#保留.git与.ccache
+echo "openwrt: after rm -rf *"
+ls
+# Retain .git and .ccache
 rm -rf .gitattributes .github .gitignore
-git clone https://github.com/robimarko/openwrt -b ipq807x-5.15 ../openwrt-temp
+echo "openwrt: after rm -rf .gitattributes .github .gitignore"
+ls
+git clone https://github.com/robimarko/openwrt -b ipq807x-5.15-pr ../openwrt-temp
+echo "openwrt-temp: before rm -rf ../openwrt-temp/.git"
+ls ../openwrt-temp
 rm -rf ../openwrt-temp/.git
+echo "openwrt-temp: after rm -rf ../openwrt-temp/.git"
+ls ../openwrt-temp
 mv ../openwrt-temp/* ../openwrt-temp/.[^.]* ./
+echo "openwrt: after mv ../openwrt-temp/* ../openwrt-temp/.[^.]* ./"
+ls
 git add -A
 git commit -m "temp"
 git pull --rebase
