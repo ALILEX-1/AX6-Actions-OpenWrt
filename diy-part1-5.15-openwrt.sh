@@ -18,12 +18,11 @@ git config --global user.name "hnyyghk"
 git reset 90e4c8c6e6fe060d849a5b96bc7595345ce3d6ea
 echo "openwrt: before rm -rf *"
 ls -a
-rm -rf *
+echo "cat Makefile"
+cat Makefile
+# Retain .ccache .git staging_dir
+rm -rf .gitattributes .github .gitignore BSDmakefile COPYING Config.in LICENSES Makefile README.md config feeds.conf.default include package rules.mk scripts target toolchain tools
 echo "openwrt: after rm -rf *"
-ls -a
-# Retain .git and .ccache
-rm -rf .gitattributes .github .gitignore
-echo "openwrt: after rm -rf .gitattributes .github .gitignore"
 ls -a
 git clone https://github.com/robimarko/openwrt -b ipq807x-5.15-pr ../openwrt-temp
 echo "openwrt-temp: before rm -rf ../openwrt-temp/.git"
