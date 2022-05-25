@@ -15,11 +15,7 @@
 
 git config --global user.email "i@5icodes.com"
 git config --global user.name "hnyyghk"
-echo "cat Makefile"
-cat Makefile
 git reset 90e4c8c6e6fe060d849a5b96bc7595345ce3d6ea
-echo "cat Makefile"
-cat Makefile
 echo "openwrt: before rm -rf *"
 ls -a
 # Retain .git
@@ -35,6 +31,8 @@ ls -a ../openwrt-temp
 mv ../openwrt-temp/* ../openwrt-temp/.[^.]* ./
 echo "openwrt: after mv ../openwrt-temp/* ../openwrt-temp/.[^.]* ./"
 ls -a
+echo "openwrt-temp: after mv ../openwrt-temp/* ../openwrt-temp/.[^.]* ./"
+ls -a ../openwrt-temp
 git add -A
 git commit -m "temp"
 git pull --rebase
