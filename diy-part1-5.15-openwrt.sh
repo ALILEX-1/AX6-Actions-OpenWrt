@@ -15,12 +15,14 @@
 
 git config --global user.email "i@5icodes.com"
 git config --global user.name "hnyyghk"
-git reset 90e4c8c6e6fe060d849a5b96bc7595345ce3d6ea
-echo "openwrt: before rm -rf *"
-ls -a
 echo "cat Makefile"
 cat Makefile
-# Retain .ccache .git staging_dir
+git reset 90e4c8c6e6fe060d849a5b96bc7595345ce3d6ea
+echo "cat Makefile"
+cat Makefile
+echo "openwrt: before rm -rf *"
+ls -a
+# Retain .git
 rm -rf .gitattributes .github .gitignore BSDmakefile COPYING Config.in LICENSES Makefile README.md config feeds.conf.default include package rules.mk scripts target toolchain tools
 echo "openwrt: after rm -rf *"
 ls -a
