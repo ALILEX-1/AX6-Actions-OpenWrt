@@ -54,6 +54,10 @@ done
 
 mkdir custom-feed/applications
 
+for i in "ipv6-helper"; do \
+  svn checkout "https://github.com/coolsnowwolf/lede/trunk/package/lean/$i" "custom-feed/applications/$i"; \
+done
+
 for i in "luci-app-vlmcsd"; do \
   svn checkout "https://github.com/coolsnowwolf/luci/trunk/applications/$i" "custom-feed/applications/$i"; \
 done
