@@ -49,7 +49,7 @@ sed -i 's/root:::0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.::0:99999:7
 
 # Ax6修改无线国家代码、开关、命名、加密方式及密码
 sed -i 's/radio${devidx}.disabled=1/radio${devidx}.country=CN\n\t\t\tset wireless.radio${devidx}.disabled=0/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
-sed -i "s/radio\${devidx}.ssid=OpenWrt/radio0.ssid=${WIFI_SSID}\n\t\t\tset wireless.default_radio1.ssid=${WIFI_SSID}_2.4G\n\t\t\tset wireless.default_radio1.hidden=1/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i "s/radio\${devidx}.ssid=OpenWrt/radio0.ssid=${WIFI_SSID}\n\t\t\tset wireless.default_radio1.ssid=${WIFI_SSID}_2.4G/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 sed -i "s/radio\${devidx}.encryption=none/radio\${devidx}.encryption=psk-mixed\n\t\t\tset wireless.default_radio\${devidx}.key=${WIFI_KEY}/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
 # 修改初始化配置
@@ -147,27 +147,26 @@ fun() {
 conf-file /etc/smartdns/ad.conf
 
 # remote dns server list
-speed-check-mode tcp:443,tcp:80,ping
-server 114.114.114.114 -check-edns #114DNS
-server 114.114.115.115 -check-edns #114DNS
-server 119.29.29.29 -check-edns #TencentDNS
-server 182.254.116.116 -check-edns #TencentDNS
-server 2402:4e00:: -check-edns #TencentDNS
-server 223.5.5.5 -check-edns #AlibabaDNS
-server 223.6.6.6 -check-edns #AlibabaDNS
-server 2400:3200::1 -check-edns #AlibabaDNS
-server 2400:3200:baba::1 -check-edns #AlibabaDNS
-server 180.76.76.76 -check-edns #BaiduDNS
-server 2400:da00::6666 -check-edns #BaiduDNS
-server-tls 1.1.1.1 -group oversea -check-edns -exclude-default-group #CloudflareDNS
-server-tls 1.0.0.1 -group oversea -check-edns -exclude-default-group #CloudflareDNS
-server-https https://dns.cloudflare.com/dns-query -group oversea -check-edns -exclude-default-group #CloudflareDNS
-server-tls 8.8.8.8 -group oversea -check-edns -exclude-default-group #GoogleDNS
-server-tls 8.8.4.4 -group oversea -check-edns -exclude-default-group #GoogleDNS
-server-https https://dns.google/dns-query -group oversea -check-edns -exclude-default-group #GoogleDNS
-server-tls 208.67.222.222 -group oversea -check-edns -exclude-default-group #OpenDNS
-server-tls 208.67.220.220 -group oversea -check-edns -exclude-default-group #OpenDNS
-server-https https://doh.opendns.com/dns-query -group oversea -check-edns -exclude-default-group #OpenDNS
+server 114.114.114.114 #114DNS
+server 114.114.115.115 #114DNS
+server 119.29.29.29 #TencentDNS
+server 182.254.116.116 #TencentDNS
+server 2402:4e00:: #TencentDNS
+server 223.5.5.5 #AlibabaDNS
+server 223.6.6.6 #AlibabaDNS
+server 2400:3200::1 #AlibabaDNS
+server 2400:3200:baba::1 #AlibabaDNS
+server 180.76.76.76 #BaiduDNS
+server 2400:da00::6666 #BaiduDNS
+server-tls 1.1.1.1 -group oversea -exclude-default-group #CloudflareDNS
+server-tls 1.0.0.1 -group oversea -exclude-default-group #CloudflareDNS
+server-https https://dns.cloudflare.com/dns-query -group oversea -exclude-default-group #CloudflareDNS
+server-tls 8.8.8.8 -group oversea -exclude-default-group #GoogleDNS
+server-tls 8.8.4.4 -group oversea -exclude-default-group #GoogleDNS
+server-https https://dns.google/dns-query -group oversea -exclude-default-group #GoogleDNS
+server-tls 208.67.222.222 -group oversea -exclude-default-group #OpenDNS
+server-tls 208.67.220.220 -group oversea -exclude-default-group #OpenDNS
+server-https https://doh.opendns.com/dns-query -group oversea -exclude-default-group #OpenDNS
 EOF
     /etc/init.d/smartdns restart >> /etc/custom.tag
     echo "smartdns remote dns server list finish" >> /etc/custom.tag
@@ -208,7 +207,7 @@ EOF
     uci set shadowsocksr.cfg029e1d.auto_update_time='4'
     uci commit shadowsocksr
     /usr/bin/lua /usr/share/shadowsocksr/subscribe.lua >> /etc/custom.tag
-    uci set shadowsocksr.cfg013fd6.global_server='cfg104a8f'
+    uci set shadowsocksr.cfg013fd6.global_server='cfg0f4a8f'
     uci set shadowsocksr.cfg013fd6.pdnsd_enable='0'
     uci del shadowsocksr.cfg013fd6.tunnel_forward
     uci commit shadowsocksr
