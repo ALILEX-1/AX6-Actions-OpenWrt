@@ -63,7 +63,8 @@ fun() {
     DDNS_DOMAIN=""
     DDNS_USERNAME=""
     DDNS_PASSWORD=""
-    SSR_SUBSCRIBE_URL=""
+    SSR_SUBSCRIBE_URL1=""
+    SSR_SUBSCRIBE_URL2=""
     SSR_SAVE_WORDS=""
 
     sleep 30
@@ -203,7 +204,8 @@ EOF
     uci add_list shadowsocksr.cfg034417.wan_fw_ips='208.67.220.220'
     uci set shadowsocksr.cfg029e1d.auto_update='1'
     uci set shadowsocksr.cfg029e1d.auto_update_time='4'
-    uci add_list shadowsocksr.cfg029e1d.subscribe_url="\${SSR_SUBSCRIBE_URL}"
+    uci add_list shadowsocksr.cfg029e1d.subscribe_url="\${SSR_SUBSCRIBE_URL1}"
+    uci add_list shadowsocksr.cfg029e1d.subscribe_url="\${SSR_SUBSCRIBE_URL2}"
     uci set shadowsocksr.cfg029e1d.filter_words='过期时间/剩余流量/QQ群/官网/防失联地址/回国/回家'
     uci set shadowsocksr.cfg029e1d.save_words="\${SSR_SAVE_WORDS}"
     uci set shadowsocksr.cfg029e1d.switch='1'
