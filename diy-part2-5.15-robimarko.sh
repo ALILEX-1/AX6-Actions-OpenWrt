@@ -57,12 +57,17 @@ touch package/base-files/files/etc/custom.tag
 sed -i "s/exit 0//g" package/base-files/files/etc/rc.local
 cat >> package/base-files/files/etc/rc.local << EOFEOF
 fun1() {
-    # 把局域网内所有客户端对外ipv4的53端口查询请求，都劫持指向smartdns(iptables -n -t nat -L PREROUTING)
-    iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 6053
-    iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 6053
-    # 把局域网内所有客户端对外ipv6的53端口查询请求，都劫持指向smartdns(ip6tables -n -t nat -L PREROUTING)
-    [ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 6053
-    [ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 6053
+    # 把局域网内所有客户端对外ipv4的53端口查询请求，都劫持指向路由器(iptables -n -t nat -L PREROUTING)
+    iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
+    iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53
+
+    # 把局域网内所有客户端对外ipv6的53端口查询请求，都劫持指向路由器(ip6tables -n -t nat -L PREROUTING)
+#    [ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
+#    [ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53
+
+    # 把局域网内所有客户端对外ipv4和ipv6的53端口查询请求，都劫持指向路由器(nft list chain inet fw4 dstnat)
+#    nft add rule inet fw4 dstnat udp dport 53 redirect to :53
+#    nft add rule inet fw4 dstnat tcp dport 53 redirect to :53
 
     sleep 30
 
@@ -221,9 +226,14 @@ fun() {
     /etc/init.d/autoreboot restart >> /etc/custom.tag
     echo "autoreboot finish" >> /etc/custom.tag
 
+    uci set dhcp.cfg01411c.port='6053'
+    uci commit dhcp
+    /etc/init.d/dnsmasq restart >> /etc/custom.tag
+    echo "dnsmasq finish" >> /etc/custom.tag
+
     uci set smartdns.cfg016bb1.enabled='1'
     uci set smartdns.cfg016bb1.server_name='smartdns'
-    uci set smartdns.cfg016bb1.port='6053'
+    uci set smartdns.cfg016bb1.port='53'
     uci set smartdns.cfg016bb1.tcp_server='1'
     uci set smartdns.cfg016bb1.ipv6_server='1'
     uci set smartdns.cfg016bb1.dualstack_ip_selection='1'
@@ -250,7 +260,7 @@ fun() {
     uci del smartdns.cfg016bb1.old_redirect
     uci add_list smartdns.cfg016bb1.old_redirect='none'
     uci del smartdns.cfg016bb1.old_port
-    uci add_list smartdns.cfg016bb1.old_port='6053'
+    uci add_list smartdns.cfg016bb1.old_port='53'
     uci del smartdns.cfg016bb1.old_enabled
     uci add_list smartdns.cfg016bb1.old_enabled='1'
     uci commit smartdns
