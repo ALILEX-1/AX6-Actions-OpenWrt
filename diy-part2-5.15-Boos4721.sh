@@ -38,14 +38,15 @@ echo 'Modify default LAN IP...'
 sed -i 's/10.10.10.1/192.168.31.1/g' package/base-files/files/bin/config_generate
 
 # 修正连接数（by ベ七秒鱼ベ）
-sed -i 's/net.netfilter.nf_conntrack_max=/net.netfilter.nf_conntrack_max=165535/g' package/base-files/files/etc/sysctl.conf
+sed -i 's/net.netfilter.nf_conntrack_max=65535/net.netfilter.nf_conntrack_max=165535/g' package/base-files/files/etc/sysctl.conf
 
 # 设置密码为password
-sed -i 's/root:$1$WplwC1t5$HBAtVXABp7XbvVjG4193B.:18753:0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.::0:99999:7:::/g' package/base-files/files/etc/shadow
+sed -i 's/root:$1$WplwC1t5$HBAtVXABp7XbvVjG4193B.:18753:0:99999:7:::/root:$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.:0:0:99999:7:::/g' package/base-files/files/etc/shadow
 
 # Ax6修改无线国家代码、命名及密码
 sed -i 's/radio${devidx}.country=US/radio${devidx}.country=CN/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
-sed -i "s/radio\${devidx}.ssid=OpenWrt/radio0.ssid=${WIFI_SSID}\n\t\t\tset wireless.default_radio1.ssid=${WIFI_SSID}_2.4G\n\t\t\tset wireless.default_radio1.hidden=1/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i "s/radio\${devidx}.ssid=OpenWrt/radio0.ssid=${WIFI_SSID}\n\t\t\tset wireless.default_radio1.ssid=${WIFI_SSID}_2.4G/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i "s/radio\${devidx}.encryption=sae-mixed/radio\${devidx}.encryption=psk-mixed/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 sed -i "s/radio\${devidx}.key=1234567890/radio\${devidx}.key=${WIFI_KEY}/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
 # Modify default banner
