@@ -56,6 +56,118 @@ sed -i "s/radio\${devidx}.encryption=none/radio\${devidx}.encryption=psk-mixed\n
 touch package/base-files/files/etc/custom.tag
 sed -i "s/exit 0//g" package/base-files/files/etc/rc.local
 cat >> package/base-files/files/etc/rc.local << EOFEOF
+fun1() {
+    # 把局域网内所有客户端对外ipv4的53端口查询请求，都劫持指向smartdns(iptables -n -t nat -L PREROUTING)
+    iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 6053
+    iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 6053
+    # 把局域网内所有客户端对外ipv6的53端口查询请求，都劫持指向smartdns(ip6tables -n -t nat -L PREROUTING)
+    [ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 6053
+    [ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 6053
+
+    sleep 30
+
+    wget -c -P /etc/smartdns https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-smartdns.conf 2>> /etc/custom.tag
+    if [ -f "/etc/smartdns/anti-ad-smartdns.conf" ];then
+        grep "^address" /etc/smartdns/anti-ad-smartdns.conf >> /etc/smartdns/aaa.conf
+        rm -f /etc/smartdns/anti-ad-smartdns.conf
+    fi
+    wget -c -P /etc/smartdns https://raw.githubusercontent.com/neodevpro/neodevhost/master/smartdns.conf 2>> /etc/custom.tag
+    if [ -f "/etc/smartdns/smartdns.conf" ];then
+        grep "^address" /etc/smartdns/smartdns.conf >> /etc/smartdns/aaa.conf
+        rm -f /etc/smartdns/smartdns.conf
+    fi
+    wget -c -P /etc/smartdns https://raw.githubusercontent.com/jdlingyu/ad-wars/master/sha_ad_hosts 2>> /etc/custom.tag
+    if [ -f "/etc/smartdns/sha_ad_hosts" ];then
+        grep "^127" /etc/smartdns/sha_ad_hosts > /etc/smartdns/host
+        sed -i '1d' /etc/smartdns/host
+        sed -i 's/127.0.0.1 /address \//g;s/$/&\/#/g' /etc/smartdns/host
+        cat /etc/smartdns/host >> /etc/smartdns/aaa.conf
+        rm -f /etc/smartdns/sha_ad_hosts
+        rm -f /etc/smartdns/host
+    fi
+    wget -c -P /etc/smartdns https://raw.githubusercontent.com/FuckNoMotherCompanyAlliance/Fuck_CJMarketing_hosts/master/hosts 2>> /etc/custom.tag
+    if [ -f "/etc/smartdns/hosts" ];then
+        grep "^0" /etc/smartdns/hosts > /etc/smartdns/host
+        sed -i 's/0.0.0.0 /address \//g;s/$/&\/#/g' /etc/smartdns/host
+        cat /etc/smartdns/host | tr -d "\r" >> /etc/smartdns/aaa.conf
+        rm -f /etc/smartdns/hosts
+        rm -f /etc/smartdns/host
+    fi
+    wget -c -P /etc/smartdns https://raw.githubusercontent.com/Goooler/1024_hosts/master/hosts 2>> /etc/custom.tag
+    if [ -f "/etc/smartdns/hosts" ];then
+        grep "^127" /etc/smartdns/hosts > /etc/smartdns/host
+        sed -i 's/127.0.0.1 /address \//g;s/$/&\/#/g' /etc/smartdns/host
+        cat /etc/smartdns/host | tr -d "\r" >> /etc/smartdns/aaa.conf
+        rm -f /etc/smartdns/hosts
+        rm -f /etc/smartdns/host
+    fi
+    wget -c -P /etc/smartdns https://raw.githubusercontent.com/VeleSila/yhosts/master/hosts.txt 2>> /etc/custom.tag
+    if [ -f "/etc/smartdns/hosts.txt" ];then
+        grep "^0" /etc/smartdns/hosts.txt > /etc/smartdns/host.txt
+        sed -i 's/0.0.0.0 /address \//g;s/$/&\/#/g' /etc/smartdns/host.txt
+        cat /etc/smartdns/host.txt >> /etc/smartdns/aaa.conf
+        rm -f /etc/smartdns/hosts.txt
+        rm -f /etc/smartdns/host.txt
+    fi
+    cat >> /etc/smartdns/aaa.conf << EOF
+address /ad.xiaomi.com/#
+address /ad1.xiaomi.com/#
+address /ad.mi.com/#
+address /tat.pandora.xiaomi.com/#
+address /api.ad.xiaomi.com/#
+address /t7z.cupid.ptqy.gitv.tv/#
+address /fix.hpplay.cn/#
+address /rps.hpplay.cn/#
+address /imdns.hpplay.cn/#
+address /f5.market.mi-img.com/#
+address /devicemgr.hpplay.cn/#
+address /rp.hpplay.cn/#
+address /tvapp.hpplay.cn/#
+address /pin.hpplay.cn/#
+address /adcdn.hpplay.cn/#
+address /sl.hpplay.cn/#
+address /vipauth.hpplay.cn/#
+address /vipsdkauth.hpplay.cn/#
+address /sdkauth.hpplay.cn/#
+address /adeng.hpplay.cn/#
+address /conf.hpplay.cn/#
+address /image.hpplay.cn/#
+address /hotupgrade.hpplay.cn/#
+address /t7z.cupid.ptqy.gitv.tv/#
+address /cloud.hpplay.cn/#
+address /ad.hpplay.cn/#
+address /adc.hpplay.cn/#
+address /gslb.hpplay.cn/#
+address /cdn1.hpplay.cn/#
+address /ftp.hpplay.com.cn/#
+address /rp.hpplay.com.cn/#
+address /cdn.hpplay.com.cn/#
+address /userapi.hpplay.com.cn/#
+address /leboapi.hpplay.com.cn/#
+address /api.hpplay.com.cn/#
+address /h5.hpplay.com.cn/#
+address /hpplay.cdn.cibn.cc/#
+address /logonext.tv.kuyun.com/#
+address /config.kuyun.com/#
+address /f5.market.xiaomi.com/#
+address /f4.market.xiaomi.com/#
+address /f3.market.xiaomi.com/#
+address /f2.market.xiaomi.com/#
+address /f1.market.xiaomi.com/#
+address /video.market.xiaomi.com/#
+address /f5.market.mi-img.com/#
+address /f4.market.mi-img.com/#
+address /f3.market.mi-img.com/#
+address /f2.market.mi-img.com/#
+address /f1.market.mi-img.com/#
+EOF
+    echo "# block ad domain list" > /etc/smartdns/ad.conf
+    sort -u /etc/smartdns/aaa.conf >> /etc/smartdns/ad.conf
+    rm -f /etc/smartdns/aaa.conf
+    /etc/init.d/smartdns restart >> /etc/custom.tag
+    echo "smartdns block ad domain list finish" >> /etc/custom.tag
+}
+
 fun() {
     PPPOE_USERNAME=""
     PPPOE_PASSWORD=""
@@ -220,123 +332,17 @@ EOF
     /etc/init.d/shadowsocksr restart >> /etc/custom.tag
     echo "shadowsocksr finish" >> /etc/custom.tag
 
-    sleep 30
-
-    wget -c -P /etc/smartdns https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-smartdns.conf 2>> /etc/custom.tag
-    if [ -f "/etc/smartdns/anti-ad-smartdns.conf" ];then
-        grep "^address" /etc/smartdns/anti-ad-smartdns.conf >> /etc/smartdns/aaa.conf
-        rm -f /etc/smartdns/anti-ad-smartdns.conf
-    fi
-    wget -c -P /etc/smartdns https://raw.githubusercontent.com/neodevpro/neodevhost/master/smartdns.conf 2>> /etc/custom.tag
-    if [ -f "/etc/smartdns/smartdns.conf" ];then
-        grep "^address" /etc/smartdns/smartdns.conf >> /etc/smartdns/aaa.conf
-        rm -f /etc/smartdns/smartdns.conf
-    fi
-    wget -c -P /etc/smartdns https://raw.githubusercontent.com/jdlingyu/ad-wars/master/sha_ad_hosts 2>> /etc/custom.tag
-    if [ -f "/etc/smartdns/sha_ad_hosts" ];then
-        grep "^127" /etc/smartdns/sha_ad_hosts > /etc/smartdns/host
-        sed -i '1d' /etc/smartdns/host
-        sed -i 's/127.0.0.1 /address \//g;s/$/&\/#/g' /etc/smartdns/host
-        cat /etc/smartdns/host >> /etc/smartdns/aaa.conf
-        rm -f /etc/smartdns/sha_ad_hosts
-        rm -f /etc/smartdns/host
-    fi
-    wget -c -P /etc/smartdns https://raw.githubusercontent.com/FuckNoMotherCompanyAlliance/Fuck_CJMarketing_hosts/master/hosts 2>> /etc/custom.tag
-    if [ -f "/etc/smartdns/hosts" ];then
-        grep "^0" /etc/smartdns/hosts > /etc/smartdns/host
-        sed -i 's/0.0.0.0 /address \//g;s/$/&\/#/g' /etc/smartdns/host
-        cat /etc/smartdns/host | tr -d "\r" >> /etc/smartdns/aaa.conf
-        rm -f /etc/smartdns/hosts
-        rm -f /etc/smartdns/host
-    fi
-    wget -c -P /etc/smartdns https://raw.githubusercontent.com/Goooler/1024_hosts/master/hosts 2>> /etc/custom.tag
-    if [ -f "/etc/smartdns/hosts" ];then
-        grep "^127" /etc/smartdns/hosts > /etc/smartdns/host
-        sed -i 's/127.0.0.1 /address \//g;s/$/&\/#/g' /etc/smartdns/host
-        cat /etc/smartdns/host | tr -d "\r" >> /etc/smartdns/aaa.conf
-        rm -f /etc/smartdns/hosts
-        rm -f /etc/smartdns/host
-    fi
-    wget -c -P /etc/smartdns https://raw.githubusercontent.com/VeleSila/yhosts/master/hosts.txt 2>> /etc/custom.tag
-    if [ -f "/etc/smartdns/hosts.txt" ];then
-        grep "^0" /etc/smartdns/hosts.txt > /etc/smartdns/host.txt
-        sed -i 's/0.0.0.0 /address \//g;s/$/&\/#/g' /etc/smartdns/host.txt
-        cat /etc/smartdns/host.txt >> /etc/smartdns/aaa.conf
-        rm -f /etc/smartdns/hosts.txt
-        rm -f /etc/smartdns/host.txt
-    fi
-    cat >> /etc/smartdns/aaa.conf << EOF
-address /ad.xiaomi.com/#
-address /ad1.xiaomi.com/#
-address /ad.mi.com/#
-address /tat.pandora.xiaomi.com/#
-address /api.ad.xiaomi.com/#
-address /t7z.cupid.ptqy.gitv.tv/#
-address /fix.hpplay.cn/#
-address /rps.hpplay.cn/#
-address /imdns.hpplay.cn/#
-address /f5.market.mi-img.com/#
-address /devicemgr.hpplay.cn/#
-address /rp.hpplay.cn/#
-address /tvapp.hpplay.cn/#
-address /pin.hpplay.cn/#
-address /adcdn.hpplay.cn/#
-address /sl.hpplay.cn/#
-address /vipauth.hpplay.cn/#
-address /vipsdkauth.hpplay.cn/#
-address /sdkauth.hpplay.cn/#
-address /adeng.hpplay.cn/#
-address /conf.hpplay.cn/#
-address /image.hpplay.cn/#
-address /hotupgrade.hpplay.cn/#
-address /t7z.cupid.ptqy.gitv.tv/#
-address /cloud.hpplay.cn/#
-address /ad.hpplay.cn/#
-address /adc.hpplay.cn/#
-address /gslb.hpplay.cn/#
-address /cdn1.hpplay.cn/#
-address /ftp.hpplay.com.cn/#
-address /rp.hpplay.com.cn/#
-address /cdn.hpplay.com.cn/#
-address /userapi.hpplay.com.cn/#
-address /leboapi.hpplay.com.cn/#
-address /api.hpplay.com.cn/#
-address /h5.hpplay.com.cn/#
-address /hpplay.cdn.cibn.cc/#
-address /logonext.tv.kuyun.com/#
-address /config.kuyun.com/#
-address /f5.market.xiaomi.com/#
-address /f4.market.xiaomi.com/#
-address /f3.market.xiaomi.com/#
-address /f2.market.xiaomi.com/#
-address /f1.market.xiaomi.com/#
-address /video.market.xiaomi.com/#
-address /f5.market.mi-img.com/#
-address /f4.market.mi-img.com/#
-address /f3.market.mi-img.com/#
-address /f2.market.mi-img.com/#
-address /f1.market.mi-img.com/#
-EOF
-    echo "# block ad domain list" > /etc/smartdns/ad.conf
-    sort -u /etc/smartdns/aaa.conf >> /etc/smartdns/ad.conf
-    rm -f /etc/smartdns/aaa.conf
-    /etc/init.d/smartdns restart >> /etc/custom.tag
-    echo "smartdns block ad domain list finish" >> /etc/custom.tag
+    fun1
 }
 
-# 把局域网内所有客户端对外ipv4的53端口查询请求，都劫持指向smartdns(iptables -n -t nat -L PREROUTING)
-iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 6053
-iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 6053
-# 把局域网内所有客户端对外ipv6的53端口查询请求，都劫持指向smartdns(ip6tables -n -t nat -L PREROUTING)
-[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 6053
-[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 6053
-
-if [ ! -f "/etc/custom.tag" ];then
+if [ -f "/etc/custom.tag" ];then
+    echo "smartdns block ad domain list start" > /etc/custom.tag
+    fun1 &
+else
     touch /etc/custom.tag
     fun &
-    echo "rc.local finish" >> /etc/custom.tag
 fi
-
+echo "rc.local finish" >> /etc/custom.tag
 exit 0
 EOFEOF
 
