@@ -117,7 +117,7 @@ fun() {
     uci set smartdns.cfg016bb1.dualstack_ip_selection='1'
     uci set smartdns.cfg016bb1.prefetch_domain='1'
     uci set smartdns.cfg016bb1.serve_expired='1'
-    uci set smartdns.cfg016bb1.redirect='dnsmasq-upstream'
+    uci set smartdns.cfg016bb1.redirect='none'
     uci set smartdns.cfg016bb1.cache_size='16384'
     uci set smartdns.cfg016bb1.rr_ttl='30'
     uci set smartdns.cfg016bb1.rr_ttl_min='30'
@@ -136,9 +136,9 @@ fun() {
     uci set smartdns.cfg016bb1.force_aaaa_soa='0'
     uci set smartdns.cfg016bb1.coredump='0'
     uci del smartdns.cfg016bb1.old_redirect
-    uci add_list smartdns.cfg016bb1.old_redirect='redirect'
+    uci add_list smartdns.cfg016bb1.old_redirect='none'
     uci del smartdns.cfg016bb1.old_port
-    uci add_list smartdns.cfg016bb1.old_port='5335'
+    uci add_list smartdns.cfg016bb1.old_port='6053'
     uci del smartdns.cfg016bb1.old_enabled
     uci add_list smartdns.cfg016bb1.old_enabled='1'
     uci commit smartdns
@@ -317,29 +317,25 @@ address /f3.market.mi-img.com/#
 address /f2.market.mi-img.com/#
 address /f1.market.mi-img.com/#
 EOF
-    sort -u /etc/smartdns/aaa.conf > /etc/smartdns/bbb.conf
-    echo "# block ad domain list" >> /etc/smartdns/ad.conf
-    cat /etc/smartdns/bbb.conf >> /etc/smartdns/ad.conf
+    echo "# block ad domain list" > /etc/smartdns/ad.conf
+    sort -u /etc/smartdns/aaa.conf >> /etc/smartdns/ad.conf
     rm -f /etc/smartdns/aaa.conf
-    rm -f /etc/smartdns/bbb.conf
     /etc/init.d/smartdns restart >> /etc/custom.tag
     echo "smartdns block ad domain list finish" >> /etc/custom.tag
 }
 
-# 把局域网内所有客户端对外ipv4的53端口查询请求，都劫持指向路由器(iptables -n -t nat -L PREROUTING)
-iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
-iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53
-# 把局域网内所有客户端对外ipv6的53端口查询请求，都劫持指向路由器(ip6tables -n -t nat -L PREROUTING)
-[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
-[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53
+# 把局域网内所有客户端对外ipv4的53端口查询请求，都劫持指向smartdns(iptables -n -t nat -L PREROUTING)
+iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 6053
+iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 6053
+# 把局域网内所有客户端对外ipv6的53端口查询请求，都劫持指向smartdns(ip6tables -n -t nat -L PREROUTING)
+[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 6053
+[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 6053
 
-if [ -f "/etc/custom.tag" ];then
-    exit 0
+if [ ! -f "/etc/custom.tag" ];then
+    touch /etc/custom.tag
+    fun &
+    echo "rc.local finish" >> /etc/custom.tag
 fi
-touch /etc/custom.tag
-
-fun &
-echo "rc.local finish" >> /etc/custom.tag
 
 exit 0
 EOFEOF
