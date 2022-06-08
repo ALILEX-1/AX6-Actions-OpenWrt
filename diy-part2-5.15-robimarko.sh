@@ -335,15 +335,15 @@ EOF
 
 # 把局域网内所有客户端对外ipv4的53端口查询请求，都劫持指向路由器(iptables -n -t nat -L PREROUTING -v --line-number)(iptables -t nat -D PREROUTING 2)
 # allow ipv4 dns queries to router
-iptables -t nat -A PREROUTING -p udp --dport 53 -d $(uci get network.lan.ipaddr) -j ACCEPT
-iptables -t nat -A PREROUTING -p tcp --dport 53 -d $(uci get network.lan.ipaddr) -j ACCEPT
+iptables -t nat -A PREROUTING -p udp --dport 53 -d \$(uci get network.lan.ipaddr) -j ACCEPT
+iptables -t nat -A PREROUTING -p tcp --dport 53 -d \$(uci get network.lan.ipaddr) -j ACCEPT
 # hijack the rest of ipv4 dns queries
 iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
 iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53
 # 把局域网内所有客户端对外ipv6的53端口查询请求，都劫持指向路由器(ip6tables -n -t nat -L PREROUTING -v --line-number)(ip6tables -t nat -D PREROUTING 1)
 # allow ipv6 dns queries to router
-[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p udp --dport 53 -d $(uci get network.globals.ula_prefix | sed 's/\/48/1/g') -j ACCEPT
-[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p tcp --dport 53 -d $(uci get network.globals.ula_prefix | sed 's/\/48/1/g') -j ACCEPT
+[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p udp --dport 53 -d \$(uci get network.globals.ula_prefix | sed 's/\/48/1/g') -j ACCEPT
+[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p tcp --dport 53 -d \$(uci get network.globals.ula_prefix | sed 's/\/48/1/g') -j ACCEPT
 # hijack the rest of ipv6 dns queries
 [ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
 [ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53
