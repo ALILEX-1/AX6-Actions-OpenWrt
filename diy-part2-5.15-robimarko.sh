@@ -211,6 +211,74 @@ init_custom_config() {
     uci add_list smartdns.cfg016bb1.old_port='53'
     uci del smartdns.cfg016bb1.old_enabled
     uci add_list smartdns.cfg016bb1.old_enabled='1'
+    uci add smartdns server # =cfg02769c
+    uci set smartdns.@server[-1].enabled='1'
+    uci set smartdns.@server[-1].name='AlibabaDNS'
+    uci set smartdns.@server[-1].ip='223.5.5.5'
+    uci set smartdns.@server[-1].port='853'
+    uci set smartdns.@server[-1].type='tls'
+    uci set smartdns.@server[-1].server_group='china'
+    uci set smartdns.@server[-1].blacklist_ip='0'
+    uci add smartdns server # =cfg03769c
+    uci set smartdns.@server[-1].enabled='1'
+    uci set smartdns.@server[-1].name='AlibabaDNS'
+    uci set smartdns.@server[-1].ip='223.6.6.6'
+    uci set smartdns.@server[-1].port='853'
+    uci set smartdns.@server[-1].type='tls'
+    uci set smartdns.@server[-1].server_group='china'
+    uci set smartdns.@server[-1].blacklist_ip='0'
+    uci add smartdns server # =cfg04769c
+    uci set smartdns.@server[-1].enabled='1'
+    uci set smartdns.@server[-1].name='AlibabaDNS'
+    uci set smartdns.@server[-1].ip='2400:3200::1'
+    uci set smartdns.@server[-1].port='853'
+    uci set smartdns.@server[-1].type='tls'
+    uci set smartdns.@server[-1].server_group='china'
+    uci set smartdns.@server[-1].blacklist_ip='0'
+    uci add smartdns server # =cfg05769c
+    uci set smartdns.@server[-1].enabled='1'
+    uci set smartdns.@server[-1].name='AlibabaDNS'
+    uci set smartdns.@server[-1].ip='2400:3200:baba::1'
+    uci set smartdns.@server[-1].port='853'
+    uci set smartdns.@server[-1].type='tls'
+    uci set smartdns.@server[-1].server_group='china'
+    uci set smartdns.@server[-1].blacklist_ip='0'
+    uci add smartdns server # =cfg06769c
+    uci set smartdns.@server[-1].enabled='1'
+    uci set smartdns.@server[-1].name='CloudflareDNS'
+    uci set smartdns.@server[-1].ip='1.1.1.1'
+    uci set smartdns.@server[-1].port='853'
+    uci set smartdns.@server[-1].type='tls'
+    uci set smartdns.@server[-1].server_group='oversea'
+    uci set smartdns.@server[-1].blacklist_ip='0'
+    uci set smartdns.@server[-1].addition_arg='-exclude-default-group'
+    uci add smartdns server # =cfg07769c
+    uci set smartdns.@server[-1].enabled='1'
+    uci set smartdns.@server[-1].name='CloudflareDNS'
+    uci set smartdns.@server[-1].ip='1.0.0.1'
+    uci set smartdns.@server[-1].port='853'
+    uci set smartdns.@server[-1].type='tls'
+    uci set smartdns.@server[-1].server_group='oversea'
+    uci set smartdns.@server[-1].blacklist_ip='0'
+    uci set smartdns.@server[-1].addition_arg='-exclude-default-group'
+    uci add smartdns server # =cfg08769c
+    uci set smartdns.@server[-1].enabled='1'
+    uci set smartdns.@server[-1].name='GoogleDNS'
+    uci set smartdns.@server[-1].ip='8.8.8.8'
+    uci set smartdns.@server[-1].port='853'
+    uci set smartdns.@server[-1].type='tls'
+    uci set smartdns.@server[-1].server_group='oversea'
+    uci set smartdns.@server[-1].blacklist_ip='0'
+    uci set smartdns.@server[-1].addition_arg='-exclude-default-group'
+    uci add smartdns server # =cfg09769c
+    uci set smartdns.@server[-1].enabled='1'
+    uci set smartdns.@server[-1].name='GoogleDNS'
+    uci set smartdns.@server[-1].ip='8.8.4.4'
+    uci set smartdns.@server[-1].port='853'
+    uci set smartdns.@server[-1].type='tls'
+    uci set smartdns.@server[-1].server_group='oversea'
+    uci set smartdns.@server[-1].blacklist_ip='0'
+    uci set smartdns.@server[-1].addition_arg='-exclude-default-group'
     uci commit smartdns
     touch /etc/smartdns/ad.conf
     cat >> /etc/smartdns/custom.conf << EOF
@@ -218,21 +286,6 @@ init_custom_config() {
 
 # Include another configuration options
 conf-file /etc/smartdns/ad.conf
-
-# remote dns server list
-server-tcp 114.114.114.114 -group china -check-edns #114DNS
-server-tcp 119.29.29.29 -group china -check-edns #TencentDNS
-server-tcp 2402:4e00:: -group china -check-edns #TencentDNS
-server-tcp 223.5.5.5 -group china -check-edns #AlibabaDNS
-server-tcp 2400:3200::1 -group china -check-edns #AlibabaDNS
-server-tcp 180.76.76.76 -group china -check-edns #BaiduDNS
-server-tcp 2400:da00::6666 -group china -check-edns #BaiduDNS
-server-tls 1.0.0.1 -group oversea -check-edns -exclude-default-group #CloudflareDNS
-server-https https://1.1.1.1/dns-query -group oversea -check-edns -exclude-default-group -host-name dns.cloudflare.com #CloudflareDNS
-server-tls 8.8.4.4 -group oversea -check-edns -exclude-default-group #GoogleDNS
-server-https https://8.8.8.8/dns-query -group oversea -check-edns -exclude-default-group -host-name dns.google #GoogleDNS
-server-tls 208.67.220.220 -group oversea -check-edns -exclude-default-group #OpenDNS
-server-https https://208.67.222.222/dns-query -group oversea -check-edns -exclude-default-group -host-name doh.opendns.com #OpenDNS
 EOF
     /etc/init.d/smartdns restart >> /etc/custom.tag
     echo "smartdns remote dns server list finish" >> /etc/custom.tag
@@ -298,8 +351,6 @@ EOF
     uci add_list shadowsocksr.cfg034417.wan_fw_ips='1.0.0.1'
     uci add_list shadowsocksr.cfg034417.wan_fw_ips='8.8.8.8'
     uci add_list shadowsocksr.cfg034417.wan_fw_ips='8.8.4.4'
-    uci add_list shadowsocksr.cfg034417.wan_fw_ips='208.67.222.222'
-    uci add_list shadowsocksr.cfg034417.wan_fw_ips='208.67.220.220'
     uci set shadowsocksr.cfg029e1d.auto_update='1'
     uci set shadowsocksr.cfg029e1d.auto_update_time='4'
     uci add_list shadowsocksr.cfg029e1d.subscribe_url="\${SSR_SUBSCRIBE_URL}"
