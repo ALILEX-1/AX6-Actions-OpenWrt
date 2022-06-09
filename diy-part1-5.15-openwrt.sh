@@ -23,6 +23,9 @@ rm -rf .gitattributes .github .gitignore BSDmakefile COPYING Config.in LICENSES 
 echo "openwrt: after rm -rf *"
 ls -a
 git clone https://github.com/robimarko/openwrt -b ipq807x-5.15-pr ../openwrt-temp
+cd ../openwrt-temp
+git reset ed39c1a0bded4de59fe1856dcd8ee3604e009052
+cd ../openwrt
 echo "openwrt-temp: before rm -rf ../openwrt-temp/.git"
 ls -a ../openwrt-temp
 rm -rf ../openwrt-temp/.git
