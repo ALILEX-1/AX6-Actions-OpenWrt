@@ -15,7 +15,7 @@
 
 git config --global user.email "i@5icodes.com"
 git config --global user.name "hnyyghk"
-git reset f5a87a0a7b8d5aa83435868eb324601df6c4f4dc
+git reset --hard f5a87a0a7b8d5aa83435868eb324601df6c4f4dc
 echo "openwrt: before rm -rf *"
 ls -a
 # Retain .git
@@ -24,7 +24,7 @@ echo "openwrt: after rm -rf *"
 ls -a
 git clone https://github.com/robimarko/openwrt -b ipq807x-5.15-pr ../openwrt-temp
 cd ../openwrt-temp
-git reset ed39c1a0bded4de59fe1856dcd8ee3604e009052
+git reset --hard ed39c1a0bded4de59fe1856dcd8ee3604e009052
 cd ../openwrt
 echo "openwrt-temp: before rm -rf ../openwrt-temp/.git"
 ls -a ../openwrt-temp
