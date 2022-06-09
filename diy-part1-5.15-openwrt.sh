@@ -15,7 +15,7 @@
 
 git config --global user.email "i@5icodes.com"
 git config --global user.name "hnyyghk"
-git reset 03685d347025e62faa8f89d0502dcd1dcf6152b4
+git reset f5a87a0a7b8d5aa83435868eb324601df6c4f4dc
 echo "openwrt: before rm -rf *"
 ls -a
 # Retain .git
