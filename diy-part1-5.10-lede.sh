@@ -19,7 +19,7 @@ git revert --no-edit 98eeb48d7069b0ca3e52fdd23a03951532aa7ddc
 git revert --no-edit edbd8d2e9839357f3a4f0a06174d243f362b1544
 
 # Add a feed source
-#echo 'src-git helloworld https://github.com/fw876/helloworld' >> feeds.conf.default
+echo 'src-git helloworld https://github.com/fw876/helloworld' >> feeds.conf.default
 #echo 'src-git passwall_packages https://github.com/xiaorouji/openwrt-passwall;packages' >> feeds.conf.default
 #echo 'src-git passwall_luci https://github.com/xiaorouji/openwrt-passwall;luci' >> feeds.conf.default
 echo 'src-git kenzo https://github.com/kenzok8/small-package' >> feeds.conf.default

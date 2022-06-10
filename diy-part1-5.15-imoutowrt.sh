@@ -18,7 +18,7 @@ git config --global user.name "hnyyghk"
 git revert --no-edit 7ae8b0afc13b76e3ed4c2f14baee2d0317a76517
 
 # Add a feed source
-#echo 'src-git helloworld https://github.com/fw876/helloworld' >> feeds.conf.default
+echo 'src-git helloworld https://github.com/fw876/helloworld' >> feeds.conf.default
 #echo 'src-git passwall_packages https://github.com/xiaorouji/openwrt-passwall;packages' >> feeds.conf.default
 #echo 'src-git passwall_luci https://github.com/xiaorouji/openwrt-passwall;luci' >> feeds.conf.default
 echo 'src-git kenzo https://github.com/kenzok8/small-package' >> feeds.conf.default
