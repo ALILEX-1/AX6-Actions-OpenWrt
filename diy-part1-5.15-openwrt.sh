@@ -41,18 +41,13 @@ git commit -m "temp"
 git pull --rebase
 
 # Add a feed source
-echo 'src-git helloworld https://github.com/fw876/helloworld' >> feeds.conf.default
-#echo 'src-git passwall_packages https://github.com/xiaorouji/openwrt-passwall;packages' >> feeds.conf.default
-#echo 'src-git passwall_luci https://github.com/xiaorouji/openwrt-passwall;luci' >> feeds.conf.default
+#echo 'src-git helloworld https://github.com/fw876/helloworld' >> feeds.conf.default
+echo 'src-git passwall_packages https://github.com/xiaorouji/openwrt-passwall;packages' >> feeds.conf.default
+echo 'src-git passwall_luci https://github.com/xiaorouji/openwrt-passwall;luci' >> feeds.conf.default
 echo 'src-git kenzo https://github.com/kenzok8/small-package' >> feeds.conf.default
 #echo 'src-git lienol https://github.com/Lienol/openwrt-package' >> feeds.conf.default
 #echo 'src-git Boos https://github.com/Boos4721/OpenWrt-Packages' >> feeds.conf.default
 echo 'src-link custom /workdir/openwrt/custom-feed' >> feeds.conf.default
-
-mkdir -p package/helloworld
-for i in "dns2socks" "microsocks" "ipt2socks" "redsocks2"; do \
-  svn checkout "https://github.com/immortalwrt/packages/trunk/net/$i" "package/helloworld/$i"; \
-done
 
 mkdir custom-feed
 
