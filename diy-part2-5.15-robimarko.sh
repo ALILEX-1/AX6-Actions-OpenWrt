@@ -348,7 +348,6 @@ EOF
     /usr/bin/lua /usr/share/passwall/subscribe.lua start
     uci set passwall.cfg013fd6.tcp_node="\${SSR_GLOBAL_SERVER}"
     uci set passwall.cfg013fd6.enabled='1'
-    uci set passwall.cfg013fd6.udp_node='tcp'
     uci set passwall.cfg013fd6.dns_shunt='smartdns'
     uci set passwall.cfg013fd6.group_domestic='china'
     uci set passwall.cfg013fd6.dns_mode='udp'
