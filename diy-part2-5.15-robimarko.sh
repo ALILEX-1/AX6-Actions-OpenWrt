@@ -198,7 +198,7 @@ init_custom_config() {
     uci set smartdns.cfg016bb1.seconddns_server_group='oversea'
     uci set smartdns.cfg016bb1.seconddns_no_speed_check='1'
     uci set smartdns.cfg016bb1.seconddns_no_rule_addr='0'
-    uci set smartdns.cfg016bb1.seconddns_no_rule_nameserver='0'
+    uci set smartdns.cfg016bb1.seconddns_no_rule_nameserver='1'
     uci set smartdns.cfg016bb1.seconddns_no_rule_ipset='0'
     uci set smartdns.cfg016bb1.seconddns_no_rule_soa='0'
     uci set smartdns.cfg016bb1.seconddns_no_dualstack_selection='1'
@@ -331,23 +331,31 @@ EOF
     /etc/init.d/ddns restart >> /etc/custom.tag
     echo "ddns finish" >> /etc/custom.tag
 
-    uci add_list shadowsocksr.cfg034417.wan_fw_ips='1.1.1.1'
-    uci add_list shadowsocksr.cfg034417.wan_fw_ips='1.0.0.1'
-    uci add_list shadowsocksr.cfg034417.wan_fw_ips='8.8.8.8'
-    uci add_list shadowsocksr.cfg034417.wan_fw_ips='8.8.4.4'
-    uci set shadowsocksr.cfg029e1d.auto_update='1'
-    uci set shadowsocksr.cfg029e1d.auto_update_time='4'
-    uci add_list shadowsocksr.cfg029e1d.subscribe_url="\${SSR_SUBSCRIBE_URL}"
-    uci set shadowsocksr.cfg029e1d.save_words="\${SSR_SAVE_WORDS}"
-    uci set shadowsocksr.cfg029e1d.switch='1'
-    uci commit shadowsocksr
-    /usr/bin/lua /usr/share/shadowsocksr/subscribe.lua >> /etc/custom.tag
-    uci set shadowsocksr.cfg013fd6.global_server="\${SSR_GLOBAL_SERVER}"
-    uci set shadowsocksr.cfg013fd6.pdnsd_enable='0'
-    uci del shadowsocksr.cfg013fd6.tunnel_forward
-    uci commit shadowsocksr
-    /etc/init.d/shadowsocksr restart >> /etc/custom.tag
-    echo "shadowsocksr finish" >> /etc/custom.tag
+    uci add passwall subscribe_list # =cfg108b02
+    uci set passwall.@subscribe_list[-1].remark='passwall'
+    uci set passwall.@subscribe_list[-1].url="\${SSR_SUBSCRIBE_URL}"
+    uci set passwall.@subscribe_list[-1].allowInsecure='0'
+    uci set passwall.@subscribe_list[-1].filter_keyword_mode='5'
+    uci set passwall.@subscribe_list[-1].ss_aead_type='global'
+    uci set passwall.@subscribe_list[-1].trojan_type='global'
+    uci set passwall.@subscribe_list[-1].auto_update='1'
+    uci set passwall.@subscribe_list[-1].week_update='7'
+    uci set passwall.@subscribe_list[-1].time_update='4'
+    uci set passwall.@subscribe_list[-1].user_agent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36'
+    uci set passwall.cfg08b7d7.filter_keyword_mode='2'
+    uci add_list passwall.cfg08b7d7.filter_keep_list="\${SSR_SAVE_WORDS}"
+    uci commit passwall
+    /usr/bin/lua /usr/share/passwall/subscribe.lua start
+    uci set passwall.cfg013fd6.tcp_node="\${SSR_GLOBAL_SERVER}"
+    uci set passwall.cfg013fd6.enabled='1'
+    uci set passwall.cfg013fd6.udp_node='tcp'
+    uci set passwall.cfg013fd6.dns_shunt='smartdns'
+    uci set passwall.cfg013fd6.group_domestic='china'
+    uci set passwall.cfg013fd6.dns_mode='udp'
+    uci set passwall.cfg013fd6.remote_dns='127.0.0.1:5335'
+    uci commit passwall
+    /etc/init.d/passwall restart >> /etc/custom.tag
+    echo "passwall finish" >> /etc/custom.tag
 
     refresh_ad_conf
 }
