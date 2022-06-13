@@ -15,7 +15,7 @@
 
 git config --global user.email "i@5icodes.com"
 git config --global user.name "hnyyghk"
-git reset --hard f5a87a0a7b8d5aa83435868eb324601df6c4f4dc
+git reset --hard f03b20837bf821241acecaf94fc6a26ce49991be
 echo "openwrt: before rm -rf *"
 ls -a
 # Retain .git
@@ -23,9 +23,9 @@ rm -rf .gitattributes .github .gitignore BSDmakefile COPYING Config.in LICENSES 
 echo "openwrt: after rm -rf *"
 ls -a
 git clone https://github.com/robimarko/openwrt -b ipq807x-5.15-pr ../openwrt-temp
-cd ../openwrt-temp
-git reset --hard ed39c1a0bded4de59fe1856dcd8ee3604e009052
-cd ../openwrt
+#cd ../openwrt-temp
+#git reset --hard ed39c1a0bded4de59fe1856dcd8ee3604e009052
+#cd ../openwrt
 echo "openwrt-temp: before rm -rf ../openwrt-temp/.git"
 ls -a ../openwrt-temp
 rm -rf ../openwrt-temp/.git
@@ -41,13 +41,18 @@ git commit -m "temp"
 git pull --rebase
 
 # Add a feed source
-#echo 'src-git helloworld https://github.com/fw876/helloworld' >> feeds.conf.default
-echo 'src-git passwall_packages https://github.com/xiaorouji/openwrt-passwall;packages' >> feeds.conf.default
-echo 'src-git passwall_luci https://github.com/xiaorouji/openwrt-passwall;luci' >> feeds.conf.default
+echo 'src-git helloworld https://github.com/fw876/helloworld' >> feeds.conf.default
+#echo 'src-git passwall_packages https://github.com/xiaorouji/openwrt-passwall;packages' >> feeds.conf.default
+#echo 'src-git passwall_luci https://github.com/xiaorouji/openwrt-passwall;luci' >> feeds.conf.default
 echo 'src-git kenzo https://github.com/kenzok8/small-package' >> feeds.conf.default
 #echo 'src-git lienol https://github.com/Lienol/openwrt-package' >> feeds.conf.default
 #echo 'src-git Boos https://github.com/Boos4721/OpenWrt-Packages' >> feeds.conf.default
 echo 'src-link custom /workdir/openwrt/custom-feed' >> feeds.conf.default
+
+mkdir -p package/helloworld
+for i in "dns2socks" "microsocks" "ipt2socks" "redsocks2"; do \
+  svn checkout "https://github.com/immortalwrt/packages/trunk/net/$i" "package/helloworld/$i"; \
+done
 
 mkdir custom-feed
 
