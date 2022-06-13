@@ -227,10 +227,10 @@ server 114.114.115.115 -group china #114DNS
 server 119.29.29.29 -group china #TencentDNS
 server 182.254.116.116 -group china #TencentDNS
 server 2402:4e00:: -group china #TencentDNS
-server 223.5.5.5 -group china -group bootstrap #AlibabaDNS
-server 223.6.6.6 -group china -group bootstrap #AlibabaDNS
-server 2400:3200::1 -group china #AlibabaDNS
-server 2400:3200:baba::1 -group china #AlibabaDNS
+server-tls 223.5.5.5 -group china -group bootstrap #AlibabaDNS
+server-tls 223.6.6.6 -group china -group bootstrap #AlibabaDNS
+server-tls 2400:3200::1 -group china -group bootstrap #AlibabaDNS
+server-tls 2400:3200:baba::1 -group china -group bootstrap #AlibabaDNS
 server 180.76.76.76 -group china #BaiduDNS
 server 2400:da00::6666 -group china #BaiduDNS
 nameserver /cloudflare-dns.com/bootstrap
