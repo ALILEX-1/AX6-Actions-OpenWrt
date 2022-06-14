@@ -414,7 +414,7 @@ echo "                                                               " >> packag
 #}
 
 # 移除重复软件包
-rm -rf package/net/xray-core
+rm -rf feeds/packages/net/xray-core
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
