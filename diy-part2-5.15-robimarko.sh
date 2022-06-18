@@ -72,6 +72,8 @@ refresh_ad_conf() {
     # grep -v "\." /etc/smartdns/ad.conf
     # grep "address /api.xiaomi.com/#" /etc/smartdns/ad.conf
     # grep "*" /etc/smartdns/ad.conf
+    # grep "address /\." /etc/smartdns/ad.conf
+    # grep "\./#" /etc/smartdns/ad.conf
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-smartdns.conf 2>> /etc/custom.tag
     if [ -f "/etc/smartdns/anti-ad-smartdns.conf" ];then
         grep "^address" /etc/smartdns/anti-ad-smartdns.conf >> /etc/smartdns/aaa.conf
@@ -94,23 +96,23 @@ refresh_ad_conf() {
     fi
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/FuckNoMotherCompanyAlliance/Fuck_CJMarketing_hosts/master/hosts 2>> /etc/custom.tag
     if [ -f "/etc/smartdns/hosts" ];then
-        grep "^0" /etc/smartdns/hosts > /etc/smartdns/host
+        grep "^0" /etc/smartdns/hosts | tr -d "\r" > /etc/smartdns/host
         sed -i 's/0.0.0.0 /address \//g;s/$/&\/#/g' /etc/smartdns/host
-        cat /etc/smartdns/host | tr -d "\r" >> /etc/smartdns/aaa.conf
+        cat /etc/smartdns/host >> /etc/smartdns/aaa.conf
         rm -f /etc/smartdns/hosts
         rm -f /etc/smartdns/host
     fi
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/Goooler/1024_hosts/master/hosts 2>> /etc/custom.tag
     if [ -f "/etc/smartdns/hosts" ];then
-        grep "^127" /etc/smartdns/hosts > /etc/smartdns/host
+        grep "^127" /etc/smartdns/hosts | tr -d "\r" | sed 's/\.$//g' > /etc/smartdns/host
         sed -i 's/127.0.0.1 /address \//g;s/$/&\/#/g' /etc/smartdns/host
-        cat /etc/smartdns/host | tr -d "\r" >> /etc/smartdns/aaa.conf
+        cat /etc/smartdns/host >> /etc/smartdns/aaa.conf
         rm -f /etc/smartdns/hosts
         rm -f /etc/smartdns/host
     fi
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/VeleSila/yhosts/master/hosts.txt 2>> /etc/custom.tag
     if [ -f "/etc/smartdns/hosts.txt" ];then
-        grep "^0" /etc/smartdns/hosts.txt | grep -v "0.0.0.0 XiaoQiang" | grep -v "0.0.0.0 localhost" > /etc/smartdns/host.txt
+        grep "^0" /etc/smartdns/hosts.txt | grep -v "0.0.0.0 XiaoQiang" | grep -v "0.0.0.0 localhost" | sed 's/\.$//g' > /etc/smartdns/host.txt
         sed -i 's/0.0.0.0 /address \//g;s/$/&\/#/g' /etc/smartdns/host.txt
         cat /etc/smartdns/host.txt >> /etc/smartdns/aaa.conf
         rm -f /etc/smartdns/hosts.txt
