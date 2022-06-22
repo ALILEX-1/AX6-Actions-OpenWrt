@@ -74,14 +74,16 @@ refresh_ad_conf() {
     # grep "*" /etc/smartdns/ad.conf
     # grep "address /\." /etc/smartdns/ad.conf
     # grep "\./#" /etc/smartdns/ad.conf
+    # grep "pv.kuaizhan.com" /etc/smartdns/ad.conf
+    # grep "changyan.sohu.com" /etc/smartdns/ad.conf
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-smartdns.conf 2>> /etc/custom.tag
     if [ -f "/etc/smartdns/anti-ad-smartdns.conf" ];then
-        grep "^address" /etc/smartdns/anti-ad-smartdns.conf >> /etc/smartdns/aaa.conf
+        grep "^address" /etc/smartdns/anti-ad-smartdns.conf | grep -v "address /pv.kuaizhan.com/#" | grep -v "address /changyan.sohu.com/#" >> /etc/smartdns/aaa.conf
         rm -f /etc/smartdns/anti-ad-smartdns.conf
     fi
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/neodevpro/neodevhost/master/smartdns.conf 2>> /etc/custom.tag
     if [ -f "/etc/smartdns/smartdns.conf" ];then
-        grep "^address" /etc/smartdns/smartdns.conf | grep -v "address /api.xiaomi.com/#" | grep -v "address /::1localhost/#" | grep -v "address /XiaoQiang/#" | grep -v "address /inf/#" >> /etc/smartdns/aaa.conf
+        grep "^address" /etc/smartdns/smartdns.conf | grep -v "address /inf/#" | grep -v "address /changyan.sohu.com/#" >> /etc/smartdns/aaa.conf
         rm -f /etc/smartdns/smartdns.conf
     fi
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/jdlingyu/ad-wars/master/sha_ad_hosts 2>> /etc/custom.tag
@@ -90,7 +92,7 @@ refresh_ad_conf() {
         sed -i '1d' /etc/smartdns/host
         sed -i 's/127.0.0.1 \*\./127.0.0.1 /g' /etc/smartdns/host
         sed -i 's/127.0.0.1 /address \//g;s/$/&\/#/g' /etc/smartdns/host
-        cat /etc/smartdns/host >> /etc/smartdns/aaa.conf
+        cat /etc/smartdns/host | grep -v "address /changyan.sohu.com/#" >> /etc/smartdns/aaa.conf
         rm -f /etc/smartdns/sha_ad_hosts
         rm -f /etc/smartdns/host
     fi
@@ -122,7 +124,7 @@ refresh_ad_conf() {
     if [ -f "/etc/smartdns/reject-list.txt" ];then
         sed -i 's/^/address \//g' /etc/smartdns/reject-list.txt
         sed -i 's/$/\/#/g' /etc/smartdns/reject-list.txt
-        cat /etc/smartdns/reject-list.txt >> /etc/smartdns/aaa.conf
+        cat /etc/smartdns/reject-list.txt | grep -v "address /pv.kuaizhan.com/#" >> /etc/smartdns/aaa.conf
         rm -f /etc/smartdns/reject-list.txt
     fi
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/win-spy.txt 2>> /etc/custom.tag
