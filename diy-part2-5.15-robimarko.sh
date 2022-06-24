@@ -424,9 +424,11 @@ iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53
 # hijack the rest of ipv6 dns queries
 [ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
 [ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53
-# 把局域网内所有客户端对外ipv4和ipv6的53端口查询请求，都劫持指向路由器(nft --handle list chain inet fw4 dstnat)(nft delete rule inet fw4 dstnat handle 337)
-#nft add rule inet fw4 dstnat udp dport 53 redirect to :53
-#nft add rule inet fw4 dstnat tcp dport 53 redirect to :53
+# 把局域网内所有客户端对外ipv4和ipv6的53端口查询请求，都劫持指向路由器(nft list chain inet dns-redirect prerouting)(nft delete table inet dns-redirect)
+#nft add table inet dns-redirect
+#nft 'add chain inet dns-redirect prerouting { type nat hook prerouting priority - 105; policy accept; }'
+#nft add rule inet dns-redirect prerouting udp dport 53 counter redirect to :53
+#nft add rule inet dns-redirect prerouting tcp dport 53 counter redirect to :53
 
 if [ -f "/etc/custom.tag" ];then
     echo "smartdns block ad domain list start" > /etc/custom.tag
