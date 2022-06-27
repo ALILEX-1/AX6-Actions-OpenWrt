@@ -77,17 +77,17 @@ refresh_ad_conf() {
     # grep "pv.kuaizhan.com" /etc/smartdns/ad.conf
     # grep "changyan.sohu.com" /etc/smartdns/ad.conf
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-smartdns.conf 2>> /etc/custom.tag
-    if [ -f "/etc/smartdns/anti-ad-smartdns.conf" ];then
+    if [ -f "/etc/smartdns/anti-ad-smartdns.conf" ]; then
         grep "^address" /etc/smartdns/anti-ad-smartdns.conf | grep -v "address /pv.kuaizhan.com/#" | grep -v "address /changyan.sohu.com/#" >> /etc/smartdns/aaa.conf
         rm -f /etc/smartdns/anti-ad-smartdns.conf
     fi
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/neodevpro/neodevhost/master/smartdns.conf 2>> /etc/custom.tag
-    if [ -f "/etc/smartdns/smartdns.conf" ];then
-        grep "^address" /etc/smartdns/smartdns.conf | grep -v "address /inf/#" | grep -v "address /changyan.sohu.com/#" >> /etc/smartdns/aaa.conf
+    if [ -f "/etc/smartdns/smartdns.conf" ]; then
+        grep "^address" /etc/smartdns/smartdns.conf | grep -v "address /changyan.sohu.com/#" >> /etc/smartdns/aaa.conf
         rm -f /etc/smartdns/smartdns.conf
     fi
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/jdlingyu/ad-wars/master/sha_ad_hosts 2>> /etc/custom.tag
-    if [ -f "/etc/smartdns/sha_ad_hosts" ];then
+    if [ -f "/etc/smartdns/sha_ad_hosts" ]; then
         grep "^127" /etc/smartdns/sha_ad_hosts > /etc/smartdns/host
         sed -i '1d' /etc/smartdns/host
         sed -i 's/127.0.0.1 \*\./127.0.0.1 /g' /etc/smartdns/host
@@ -97,7 +97,7 @@ refresh_ad_conf() {
         rm -f /etc/smartdns/host
     fi
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/FuckNoMotherCompanyAlliance/Fuck_CJMarketing_hosts/master/hosts 2>> /etc/custom.tag
-    if [ -f "/etc/smartdns/hosts" ];then
+    if [ -f "/etc/smartdns/hosts" ]; then
         grep "^0" /etc/smartdns/hosts | tr -d "\r" > /etc/smartdns/host
         sed -i 's/0.0.0.0 /address \//g;s/$/&\/#/g' /etc/smartdns/host
         cat /etc/smartdns/host >> /etc/smartdns/aaa.conf
@@ -105,7 +105,7 @@ refresh_ad_conf() {
         rm -f /etc/smartdns/host
     fi
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/Goooler/1024_hosts/master/hosts 2>> /etc/custom.tag
-    if [ -f "/etc/smartdns/hosts" ];then
+    if [ -f "/etc/smartdns/hosts" ]; then
         grep "^127" /etc/smartdns/hosts | tr -d "\r" | sed 's/\.$//g' > /etc/smartdns/host
         sed -i 's/127.0.0.1 /address \//g;s/$/&\/#/g' /etc/smartdns/host
         cat /etc/smartdns/host >> /etc/smartdns/aaa.conf
@@ -113,7 +113,7 @@ refresh_ad_conf() {
         rm -f /etc/smartdns/host
     fi
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/VeleSila/yhosts/master/hosts.txt 2>> /etc/custom.tag
-    if [ -f "/etc/smartdns/hosts.txt" ];then
+    if [ -f "/etc/smartdns/hosts.txt" ]; then
         grep "^0" /etc/smartdns/hosts.txt | grep -v "0.0.0.0 XiaoQiang" | grep -v "0.0.0.0 localhost" | sed 's/\.$//g' > /etc/smartdns/host.txt
         sed -i 's/0.0.0.0 /address \//g;s/$/&\/#/g' /etc/smartdns/host.txt
         cat /etc/smartdns/host.txt >> /etc/smartdns/aaa.conf
@@ -121,28 +121,28 @@ refresh_ad_conf() {
         rm -f /etc/smartdns/host.txt
     fi
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/reject-list.txt 2>> /etc/custom.tag
-    if [ -f "/etc/smartdns/reject-list.txt" ];then
+    if [ -f "/etc/smartdns/reject-list.txt" ]; then
         sed -i 's/^/address \//g' /etc/smartdns/reject-list.txt
         sed -i 's/$/\/#/g' /etc/smartdns/reject-list.txt
         cat /etc/smartdns/reject-list.txt | grep -v "address /pv.kuaizhan.com/#" >> /etc/smartdns/aaa.conf
         rm -f /etc/smartdns/reject-list.txt
     fi
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/win-spy.txt 2>> /etc/custom.tag
-    if [ -f "/etc/smartdns/win-spy.txt" ];then
+    if [ -f "/etc/smartdns/win-spy.txt" ]; then
         sed -i 's/^/address \//g' /etc/smartdns/win-spy.txt
         sed -i 's/$/\/#/g' /etc/smartdns/win-spy.txt
         cat /etc/smartdns/win-spy.txt >> /etc/smartdns/aaa.conf
         rm -f /etc/smartdns/win-spy.txt
     fi
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/win-update.txt 2>> /etc/custom.tag
-    if [ -f "/etc/smartdns/win-update.txt" ];then
+    if [ -f "/etc/smartdns/win-update.txt" ]; then
         sed -i 's/^/address \//g' /etc/smartdns/win-update.txt
         sed -i 's/$/\/#/g' /etc/smartdns/win-update.txt
         cat /etc/smartdns/win-update.txt >> /etc/smartdns/aaa.conf
         rm -f /etc/smartdns/win-update.txt
     fi
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/win-extra.txt 2>> /etc/custom.tag
-    if [ -f "/etc/smartdns/win-extra.txt" ];then
+    if [ -f "/etc/smartdns/win-extra.txt" ]; then
         sed -i 's/^/address \//g' /etc/smartdns/win-extra.txt
         sed -i 's/$/\/#/g' /etc/smartdns/win-extra.txt
         cat /etc/smartdns/win-extra.txt >> /etc/smartdns/aaa.conf
@@ -430,7 +430,7 @@ iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53
 #nft add rule inet dns-redirect prerouting udp dport 53 counter redirect to :53
 #nft add rule inet dns-redirect prerouting tcp dport 53 counter redirect to :53
 
-if [ -f "/etc/custom.tag" ];then
+if [ -f "/etc/custom.tag" ]; then
     echo "smartdns block ad domain list start" > /etc/custom.tag
     refresh_ad_conf &
 else
