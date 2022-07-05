@@ -52,6 +52,17 @@ sed -i 's/radio${devidx}.disabled=1/radio${devidx}.country=US\n\t\t\tset wireles
 sed -i "s/radio\${devidx}.ssid=OpenWrt/radio0.ssid=${WIFI_SSID}\n\t\t\tset wireless.default_radio1.ssid=${WIFI_SSID}_2.4G/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 sed -i "s/radio\${devidx}.encryption=none/radio\${devidx}.encryption=psk-mixed\n\t\t\tset wireless.default_radio\${devidx}.key=${WIFI_KEY}\n\t\t\tset wireless.default_radio\${devidx}.iw_qos_map_set=none/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
+# hijack dns queries to router
+cat >> package/network/config/firewall/files/firewall.user << EOF
+
+# 把局域网内所有客户端对外ipv4的53端口查询请求，都劫持指向路由器(iptables -n -t nat -L PREROUTING -v --line-number)(iptables -t nat -D PREROUTING 6)
+iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
+iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53
+# 把局域网内所有客户端对外ipv6的53端口查询请求，都劫持指向路由器(ip6tables -n -t nat -L PREROUTING -v --line-number)(ip6tables -t nat -D PREROUTING 1)
+[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
+[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53
+EOF
+
 # 修改初始化配置
 touch package/base-files/files/etc/custom.tag
 sed -i "s/exit 0//g" package/base-files/files/etc/rc.local
@@ -409,26 +420,6 @@ EOF
 
     refresh_ad_conf
 }
-
-# 把局域网内所有客户端对外ipv4的53端口查询请求，都劫持指向路由器(iptables -n -t nat -L PREROUTING -v --line-number)(iptables -t nat -D PREROUTING 2)
-# allow ipv4 dns queries to router
-iptables -t nat -A PREROUTING -p udp --dport 53 -d \$(uci get network.lan.ipaddr) -j ACCEPT
-iptables -t nat -A PREROUTING -p tcp --dport 53 -d \$(uci get network.lan.ipaddr) -j ACCEPT
-# hijack the rest of ipv4 dns queries
-iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
-iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53
-# 把局域网内所有客户端对外ipv6的53端口查询请求，都劫持指向路由器(ip6tables -n -t nat -L PREROUTING -v --line-number)(ip6tables -t nat -D PREROUTING 1)
-# allow ipv6 dns queries to router
-[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p udp --dport 53 -d \$(uci get network.globals.ula_prefix | sed 's/\/48/1/g') -j ACCEPT
-[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p tcp --dport 53 -d \$(uci get network.globals.ula_prefix | sed 's/\/48/1/g') -j ACCEPT
-# hijack the rest of ipv6 dns queries
-[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
-[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53
-# 把局域网内所有客户端对外ipv4和ipv6的53端口查询请求，都劫持指向路由器(nft list chain inet dns-redirect prerouting)(nft delete table inet dns-redirect)
-#nft add table inet dns-redirect
-#nft 'add chain inet dns-redirect prerouting { type nat hook prerouting priority - 105; policy accept; }'
-#nft add rule inet dns-redirect prerouting udp dport 53 counter redirect to :53
-#nft add rule inet dns-redirect prerouting tcp dport 53 counter redirect to :53
 
 if [ -f "/etc/custom.tag" ]; then
     echo "smartdns block ad domain list start" > /etc/custom.tag
