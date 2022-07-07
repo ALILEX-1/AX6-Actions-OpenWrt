@@ -53,19 +53,17 @@ sed -i "s/radio\${devidx}.ssid=OpenWrt/radio0.ssid=${WIFI_SSID}\n\t\t\tset wirel
 sed -i "s/radio\${devidx}.encryption=none/radio\${devidx}.encryption=psk-mixed\n\t\t\tset wireless.default_radio\${devidx}.key=${WIFI_KEY}\n\t\t\tset wireless.default_radio\${devidx}.iw_qos_map_set=none/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
 # hijack dns queries to router
-cat >> package/network/config/firewall/files/firewall.user << EOF
-
-# 把局域网内所有客户端对外ipv4的53端口查询请求，都劫持指向路由器(iptables -n -t nat -L PREROUTING -v --line-number)(iptables -t nat -D PREROUTING 6)
-iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
-iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53
+sed -i '/REDIRECT --to-ports 53/d' package/network/config/firewall/files/firewall.user
+# 把局域网内所有客户端对外ipv4的53端口查询请求，都劫持指向路由器(iptables -n -t nat -L PREROUTING -v --line-number)(iptables -t nat -D PREROUTING 1)
+echo 'iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53' >> package/network/config/firewall/files/firewall.user
+echo 'iptables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53' >> package/network/config/firewall/files/firewall.user
 # 把局域网内所有客户端对外ipv6的53端口查询请求，都劫持指向路由器(ip6tables -n -t nat -L PREROUTING -v --line-number)(ip6tables -t nat -D PREROUTING 1)
-[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
-[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53
-EOF
+echo '[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53' >> package/network/config/firewall/files/firewall.user
+echo '[ -n "$(command -v ip6tables)" ] && ip6tables -t nat -A PREROUTING -p tcp --dport 53 -j REDIRECT --to-ports 53' >> package/network/config/firewall/files/firewall.user
 
 # 修改初始化配置
 touch package/base-files/files/etc/custom.tag
-sed -i "s/exit 0//g" package/base-files/files/etc/rc.local
+sed -i '/exit 0/d' package/base-files/files/etc/rc.local
 cat >> package/base-files/files/etc/rc.local << EOFEOF
 PPPOE_USERNAME=""
 PPPOE_PASSWORD=""
@@ -80,6 +78,7 @@ SSR_GLOBAL_SERVER=""
 refresh_ad_conf() {
     sleep 30
 
+    # 检查拦截列表
     # grep -v "\." /etc/smartdns/ad.conf
     # grep "address /api.xiaomi.com/#" /etc/smartdns/ad.conf
     # grep "*" /etc/smartdns/ad.conf
@@ -265,20 +264,15 @@ EOF
 init_custom_config() {
     sleep 30
 
-    uci set dhcp.cfg01411c.port='6053'
-    uci commit dhcp
-    /etc/init.d/dnsmasq restart >> /etc/custom.tag
-    echo "dnsmasq finish" >> /etc/custom.tag
-
     uci set smartdns.cfg016bb1.enabled='1'
     uci set smartdns.cfg016bb1.server_name='smartdns'
-    uci set smartdns.cfg016bb1.port='53'
+    uci set smartdns.cfg016bb1.port='6053'
     uci set smartdns.cfg016bb1.tcp_server='1'
     uci set smartdns.cfg016bb1.ipv6_server='1'
     uci set smartdns.cfg016bb1.dualstack_ip_selection='1'
     uci set smartdns.cfg016bb1.prefetch_domain='1'
     uci set smartdns.cfg016bb1.serve_expired='1'
-    uci set smartdns.cfg016bb1.redirect='none'
+    uci set smartdns.cfg016bb1.redirect='dnsmasq-upstream'
     uci set smartdns.cfg016bb1.cache_size='16384'
     uci set smartdns.cfg016bb1.rr_ttl='30'
     uci set smartdns.cfg016bb1.rr_ttl_min='30'
@@ -297,9 +291,9 @@ init_custom_config() {
     uci set smartdns.cfg016bb1.force_aaaa_soa='1'
     uci set smartdns.cfg016bb1.coredump='0'
     uci del smartdns.cfg016bb1.old_redirect
-    uci add_list smartdns.cfg016bb1.old_redirect='none'
+    uci add_list smartdns.cfg016bb1.old_redirect='dnsmasq-upstream'
     uci del smartdns.cfg016bb1.old_port
-    uci add_list smartdns.cfg016bb1.old_port='53'
+    uci add_list smartdns.cfg016bb1.old_port='6053'
     uci del smartdns.cfg016bb1.old_enabled
     uci add_list smartdns.cfg016bb1.old_enabled='1'
     uci commit smartdns
