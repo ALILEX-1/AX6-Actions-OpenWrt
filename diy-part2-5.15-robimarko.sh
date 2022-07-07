@@ -106,6 +106,15 @@ refresh_ad_conf() {
         rm -f /etc/smartdns/sha_ad_hosts
         rm -f /etc/smartdns/host
     fi
+    wget -c -P /etc/smartdns https://raw.githubusercontent.com/AdAway/adaway.github.io/master/hosts.txt 2>> /etc/custom.tag
+    if [ -f "/etc/smartdns/hosts.txt" ]; then
+        grep "^127" /etc/smartdns/hosts.txt > /etc/smartdns/host
+        sed -i '1d' /etc/smartdns/host
+        sed -i 's/127.0.0.1 /address \//g;s/$/&\/#/g' /etc/smartdns/host
+        cat /etc/smartdns/host >> /etc/smartdns/aaa.conf
+        rm -f /etc/smartdns/hosts.txt
+        rm -f /etc/smartdns/host
+    fi
     wget -c -P /etc/smartdns https://raw.githubusercontent.com/FuckNoMotherCompanyAlliance/Fuck_CJMarketing_hosts/master/hosts 2>> /etc/custom.tag
     if [ -f "/etc/smartdns/hosts" ]; then
         grep "^0" /etc/smartdns/hosts | tr -d "\r" > /etc/smartdns/host
