@@ -439,6 +439,23 @@ EOF
     /etc/init.d/shadowsocksr restart >> /etc/custom.tag 2>&1
     echo "shadowsocksr finish" >> /etc/custom.tag
 
+    uci set acme.cfg01f3db.account_email="\${DDNS_USERNAME}"
+    uci set acme.cfg01f3db.debug='1'
+    uci set acme.test=cert
+    uci set acme.test.enabled='1'
+    uci set acme.test.use_staging='0'
+    uci set acme.test.keylength='2048'
+    uci add_list acme.test.domains="\${DDNS_LOOKUP_HOST}"
+    uci set acme.test.update_uhttpd='0'
+    uci set acme.test.update_nginx='0'
+    uci set acme.test.validation_method='dns'
+    uci set acme.test.dns='dns_cf'
+    uci add_list acme.test.credentials='CF_Key="\${DDNS_PASSWORD}"'
+    uci add_list acme.test.credentials='CF_Email="\${DDNS_USERNAME}"'
+    uci commit acme
+    /etc/init.d/acme restart >> /etc/custom.tag 2>&1
+    echo "acme finish" >> /etc/custom.tag
+
     refresh_ad_conf
 }
 
