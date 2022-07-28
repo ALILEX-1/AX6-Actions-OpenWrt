@@ -303,12 +303,12 @@ init_custom_config() {
     # hijack dns queries to router(firewall4)
     # 把局域网内所有客户端对外ipv4和ipv6的53端口查询请求，都劫持指向路由器(nft list chain inet fw4 dns-redirect)(nft delete chain inet fw4 dns-redirect)
     cat >> /etc/nftables.d/10-custom-filter-chains.nft << EOF
-
 chain dns-redirect {
     type nat hook prerouting priority -105;
     udp dport 53 counter redirect to :53
     tcp dport 53 counter redirect to :53
 }
+
 EOF
     uci add_list firewall.cfg03dc81.network='modem'
     uci commit firewall
